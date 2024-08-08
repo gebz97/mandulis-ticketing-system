@@ -2,7 +2,7 @@ package org.mandulis.mts.service;
 
 import org.mandulis.mts.data.entity.Attachment;
 import org.mandulis.mts.data.repository.AttachmentRepository;
-import org.mandulis.mts.entity.*;
+import org.mandulis.mts.data.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

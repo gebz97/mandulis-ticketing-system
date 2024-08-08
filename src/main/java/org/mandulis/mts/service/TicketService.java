@@ -107,6 +107,7 @@ public class TicketService {
         ticket.setPriority(ticketRequestDTO.getPriority());
         ticket.setUser(userRepository.findById(ticketRequestDTO.getUserId()).orElse(null));
         ticket.setCategory(categoryRepository.findById(ticketRequestDTO.getCategoryId()).orElse(null));
+        ticket.setStatus(Ticket.Status.OPEN);
         return ticket;
     }
 

@@ -20,7 +20,12 @@ public class Group {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "groups")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "memberships",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<User> members;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
