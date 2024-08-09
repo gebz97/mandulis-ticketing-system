@@ -27,19 +27,19 @@ public class TicketService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<TicketResponseDTO> findAll() {
+    public List<TicketResponse> findAll() {
         return ticketRepository.findAll().stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    public Optional<TicketResponseDTO> findById(Long id) {
+    public Optional<TicketResponse> findById(Long id) {
         return ticketRepository.findById(id)
                 .map(this::convertToResponseDTO);
     }
 
-    public TicketResponseDTO save(TicketRequestDTO ticketRequestDTO) {
-        Ticket ticket = convertToEntity(ticketRequestDTO);
+    public TicketResponse save(TicketRequest ticketRequest) {
+        Ticket ticket = convertToEntity(ticketRequest);
         return convertToResponseDTO(ticketRepository.save(ticket));
     }
 
@@ -47,13 +47,13 @@ public class TicketService {
         ticketRepository.deleteById(id);
     }
 
-    public TicketResponseDTO update(TicketRequestDTO ticketRequestDTO, Long id) {
-        Ticket ticket = convertToEntity(ticketRequestDTO);
+    public TicketResponse update(TicketRequest ticketRequest, Long id) {
+        Ticket ticket = convertToEntity(ticketRequest);
         ticket.setId(id);
         return convertToResponseDTO(ticketRepository.save(ticket));
     }
 
-    public List<TicketResponseDTO> filterTickets(
+    public List<TicketResponse> filterTickets(
             String title,
             String categoryName,
             Ticket.Priority priority,
@@ -95,35 +95,35 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
-    private Ticket convertToEntity(TicketRequestDTO ticketRequestDTO) {
+    private Ticket convertToEntity(TicketRequest ticketRequest) {
         Ticket ticket = new Ticket();
-        ticket.setTitle(ticketRequestDTO.getTitle());
-        ticket.setDescription(ticketRequestDTO.getDescription());
-        ticket.setPriority(ticketRequestDTO.getPriority());
-        ticket.setRequester(userRepository.findById(ticketRequestDTO.getUserId()).orElse(null));
-        ticket.setCategory(categoryRepository.findById(ticketRequestDTO.getCategoryId()).orElse(null));
+        ticket.setTitle(ticketRequest.getTitle());
+        ticket.setDescription(ticketRequest.getDescription());
+        ticket.setPriority(ticketRequest.getPriority());
+        ticket.setRequester(userRepository.findById(ticketRequest.getUserId()).orElse(null));
+        ticket.setCategory(categoryRepository.findById(ticketRequest.getCategoryId()).orElse(null));
         ticket.setStatus(Ticket.Status.OPEN);
         return ticket;
     }
 
-    private TicketResponseDTO convertToResponseDTO(Ticket ticket) {
-        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO();
-        ticketResponseDTO.setId(ticket.getId());
-        ticketResponseDTO.setTitle(ticket.getTitle());
-        ticketResponseDTO.setDescription(ticket.getDescription());
-        ticketResponseDTO.setPriority(ticket.getPriority());
-        ticketResponseDTO.setUserName(ticket.getRequester().getUsername());
-        ticketResponseDTO.setCategoryName(ticket.getCategory().getName());
-        ticketResponseDTO.setComments(ticket.getComments()
+    private TicketResponse convertToResponseDTO(Ticket ticket) {
+        TicketResponse ticketResponse = new TicketResponse();
+        ticketResponse.setId(ticket.getId());
+        ticketResponse.setTitle(ticket.getTitle());
+        ticketResponse.setDescription(ticket.getDescription());
+        ticketResponse.setPriority(ticket.getPriority());
+        ticketResponse.setUserName(ticket.getRequester().getUsername());
+        ticketResponse.setCategoryName(ticket.getCategory().getName());
+        ticketResponse.setComments(ticket.getComments()
                 .stream()
                 .map(Comment::getContent)
                 .collect(Collectors.toList()));
-        ticketResponseDTO.setAttachments(ticket.getAttachments()
+        ticketResponse.setAttachments(ticket.getAttachments()
                 .stream()
                 .map(Attachment::getFileName)
                 .collect(Collectors.toList()));
-        ticketResponseDTO.setCreatedDate(ticket.getCreatedAt());
-        ticketResponseDTO.setUpdatedDate(ticket.getUpdatedAt());
-        return ticketResponseDTO;
+        ticketResponse.setCreatedDate(ticket.getCreatedAt());
+        ticketResponse.setUpdatedDate(ticket.getUpdatedAt());
+        return ticketResponse;
     }
 }

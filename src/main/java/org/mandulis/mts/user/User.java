@@ -28,11 +28,14 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    private String firstName;
+    private String lastName;
+
     @Column(nullable = false, unique = true)
     private String email;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", nullable = false)
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -49,7 +52,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    private List<Permission> permissions; ;
+    private List<Permission> permissions;
 
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Ticket> tickets;

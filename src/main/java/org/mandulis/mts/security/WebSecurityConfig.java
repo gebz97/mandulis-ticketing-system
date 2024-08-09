@@ -15,21 +15,12 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig{
-
-    private final UserDetailsService userDetailsService;
-
-    @Autowired
-    public WebSecurityConfig(WebUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        //.requestMatchers("/", "/home").permitAll()
-                        //.anyRequest().authenticated()
                         .anyRequest().permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
@@ -45,4 +36,12 @@ public class WebSecurityConfig{
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    /*
+    @Bean
+    public UserDetailsService userDetailsService(WebUserDetailsService webUserDetailsService) {
+        return webUserDetailsService;
+    }
+
+     */
 }

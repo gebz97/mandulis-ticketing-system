@@ -9,7 +9,7 @@ import org.mandulis.mts.ticket.Ticket.Priority;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TicketRequestDTO {
+public class TicketRequest {
     private String title;
     private String description;
     private Long userId;

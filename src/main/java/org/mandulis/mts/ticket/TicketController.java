@@ -19,18 +19,18 @@ public class TicketController {
     }
 
     @GetMapping
-    public List<TicketResponseDTO> findAll() {
+    public List<TicketResponse> findAll() {
         return ticketService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Optional<TicketResponseDTO> findById(@PathVariable Long id) {
+    public Optional<TicketResponse> findById(@PathVariable Long id) {
         return ticketService.findById(id);
     }
 
     @PostMapping
-    public TicketResponseDTO save(@RequestBody TicketRequestDTO ticketRequestDTO) {
-        return ticketService.save(ticketRequestDTO);
+    public TicketResponse save(@RequestBody TicketRequest ticketRequest) {
+        return ticketService.save(ticketRequest);
     }
 
     @DeleteMapping("/{id}")
@@ -39,12 +39,12 @@ public class TicketController {
     }
 
     @PutMapping("/{id}")
-    public TicketResponseDTO update(@RequestBody TicketRequestDTO ticketRequestDTO, @PathVariable Long id) {
-        return ticketService.update(ticketRequestDTO, id);
+    public TicketResponse update(@RequestBody TicketRequest ticketRequest, @PathVariable Long id) {
+        return ticketService.update(ticketRequest, id);
     }
 
     @GetMapping("/filter")
-    public List<TicketResponseDTO> filterTickets(
+    public List<TicketResponse> filterTickets(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String categoryName,
             @RequestParam(required = false) Ticket.Priority priority,
