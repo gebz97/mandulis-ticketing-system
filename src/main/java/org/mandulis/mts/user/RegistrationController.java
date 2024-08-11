@@ -45,11 +45,13 @@ public class RegistrationController {
         return ResponseEntity.badRequest().body(errors);
     }
 
+    /*
     @ExceptionHandler(UserValidationException.class)
     public ResponseEntity<Map<String, String>> handleUserValidationException(UserValidationException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
+     */
 
 }

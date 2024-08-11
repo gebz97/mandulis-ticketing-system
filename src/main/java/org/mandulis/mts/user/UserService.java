@@ -1,5 +1,6 @@
 package org.mandulis.mts.user;
 
+import org.mandulis.mts.group.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,7 @@ public class UserService {
         newUser.setFirstName(registrationRequest.getFirstName());
         newUser.setLastName(registrationRequest.getLastName());
         var savedUser = userRepository.save(newUser);
-        return Optional.of(convertEntityToResponseDto(savedUser));
+        return Optional.of(convertEntityToRegistrationResponseDto(savedUser));
     }
 
     private void validateUser(User user) {
@@ -88,7 +89,33 @@ public class UserService {
         }
     }
 
-    public RegistrationResponse convertEntityToResponseDto(User user) {
+    public RegistrationResponse convertEntityToRegistrationResponseDto(User user) {
         return new RegistrationResponse(user.getUsername(), user.getEmail(), user.getFirstName(), user.getLastName());
+    }
+
+    public UserResponse convertEntityToUserResponseDto(User user) {
+        UserResponse foundUser =  new UserResponse();
+        foundUser.setUsername(user.getUsername());
+        foundUser.setEmail(user.getEmail());
+        foundUser.setFirstName(user.getFirstName());
+        foundUser.setLastName(user.getLastName());
+        foundUser.setGroups(
+            user.getGroups()
+                .stream()
+                .map(Group::getName)
+                .toList()
+        );
+        foundUser.setRole(user.getRole().getName());
+        return foundUser;
+    }
+
+    public Optional<UserResponse> findUserResponseById(Long id) {
+        Optional<User> foundUser = userRepository.findById(id);
+        return foundUser.map(this::convertEntityToUserResponseDto);
+    }
+
+    public Optional<UserResponse> findUserResponseByUsername(String username) {
+        Optional<User> foundUser = userRepository.findByUsername(username);
+        return foundUser.map(this::convertEntityToUserResponseDto);
     }
 }
