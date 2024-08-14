@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/user/users")
+@RequestMapping("/api/v1/public/users")
 public class UserController {
     private final UserService userService;
 

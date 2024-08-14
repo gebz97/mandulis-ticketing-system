@@ -19,6 +19,7 @@ public class Group {
 
     @Column(nullable = false, unique = true)
     private String name;
+    private String description;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -31,4 +32,3 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Ticket> tickets;
 }
-
