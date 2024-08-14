@@ -2,7 +2,7 @@ package org.mandulis.mts.controller;
 
 import org.mandulis.mts.entity.Ticket;
 import org.mandulis.mts.service.TicketService;
-import org.mandulis.mts.dto.TicketRequest;
+import org.mandulis.mts.dto.request.TicketRequest;
 import org.mandulis.mts.dto.TicketResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

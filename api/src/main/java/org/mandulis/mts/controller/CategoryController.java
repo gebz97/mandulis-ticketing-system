@@ -1,6 +1,6 @@
 package org.mandulis.mts.controller;
 
-import org.mandulis.mts.dto.CategoryRequest;
+import org.mandulis.mts.dto.request.CategoryRequest;
 import org.mandulis.mts.dto.CategoryResponse;
 import org.mandulis.mts.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package org.mandulis.mts.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.mandulis.mts.dto.GroupRequest;
+import org.mandulis.mts.dto.request.GroupRequest;
 import org.mandulis.mts.dto.GroupResponse;
 import org.mandulis.mts.entity.Group;
 import org.mandulis.mts.repository.GroupRepository;
