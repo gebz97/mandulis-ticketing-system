@@ -1,7 +1,7 @@
 package org.mandulis.mts.controller;
 
 import org.mandulis.mts.service.UserService;
-import org.mandulis.mts.dto.UserResponse;
+import org.mandulis.mts.dto.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @GetMapping("/fullinfo/id={id}")
-    public ResponseEntity<?> getFullUserInfoById(@PathVariable Long id) {
+    public ResponseEntity<Object> getFullUserInfoById(@PathVariable Long id) {
         Optional<UserResponse> foundUser = userService.findUserResponseById(id);
         if (foundUser.isPresent()) {
             return ResponseEntity.ok(foundUser.get());
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/fullinfo/name={name}")
-    public ResponseEntity<?> getFullUserInfoByName(@PathVariable String name) {
+    public ResponseEntity<Object> getFullUserInfoByName(@PathVariable String name) {
         Optional<UserResponse> foundUser = userService.findUserResponseByUsername(name);
         if (foundUser.isPresent()) {
             return ResponseEntity.ok(foundUser.get());
