@@ -1,5 +1,8 @@
 package org.mandulis.mts.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.mandulis.mts.dto.GroupRequest;
+import org.mandulis.mts.dto.GroupResponse;
 import org.mandulis.mts.entity.Group;
 import org.mandulis.mts.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +19,45 @@ public class GroupService {
     public GroupService(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
-
-    public List<Group> findAll() {
-        return groupRepository.findAll();
+    public static GroupResponse convertEntityToDto(Group entity) {
+        GroupResponse dto = new GroupResponse();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setDescription(entity.getDescription());
+        return dto;
     }
 
-    public Optional<Group> findById(Long id) {
-        return groupRepository.findById(id);
+    public List<GroupResponse> findAll() {
+        return groupRepository.findAll()
+                .stream().map(GroupService::convertEntityToDto).toList();
     }
 
-    public Group save(Group group) {
-        return groupRepository.save(group);
+    public Optional<GroupResponse> findById(Long id) {
+        return groupRepository.findById(id).map(GroupService::convertEntityToDto);
     }
 
-    public void deleteById(Long id) {
+    public GroupResponse save(GroupRequest request) {
+        Group entity = new Group();
+        entity.setName(request.getName());
+        entity.setDescription(request.getDescription());
+        return convertEntityToDto(groupRepository.save(entity));
+    }
+
+    public GroupResponse update(Long id,GroupRequest request) {
+        Optional<Group> foundGroup = groupRepository.findById(id);
+        if (foundGroup.isEmpty()) {
+            throw new EntityNotFoundException("Group with id:" + id + " not found");
+        }
+        Group entity = foundGroup.get();
+        entity.setName(request.getName());
+        entity.setDescription(request.getDescription());
+        return convertEntityToDto(groupRepository.save(entity));
+    }
+
+    public void delete(Long id) {
+        if (!groupRepository.existsById(id)) {
+            throw new EntityNotFoundException("Group with id:" + id + " not found");
+        }
         groupRepository.deleteById(id);
-    }
-
-    public Group update(Group group) {
-        return groupRepository.save(group);
     }
 }
