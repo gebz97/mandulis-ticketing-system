@@ -16,7 +16,7 @@ public class TicketResponse {
     private Long id;
     private String title;
     private String description;
-    private String userName;
+    private String username;
     private String categoryName;
     private Priority priority;
     private List<String> comments;

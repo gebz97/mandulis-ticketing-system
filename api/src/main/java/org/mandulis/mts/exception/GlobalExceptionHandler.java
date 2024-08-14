@@ -56,8 +56,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    @ExceptionHandler({UserNotFoundException.class})
-    public ResponseEntity<Object> notFoundExceptionHandler(UserNotFoundException ex, WebRequest req){
+    @ExceptionHandler({
+            UserNotFoundException.class,
+            GroupNotFoundException.class,
+            TicketNotFoundException.class
+    })
+    public ResponseEntity<Object> notFoundExceptionHandler(RuntimeException ex, WebRequest req){
         List<ErrorDetails> errors = new ArrayList<>();
         errors.add(new ErrorDetails(ex.getMessage(), req.getDescription(false), LocalDateTime.now()));
         log.error(ex.getMessage(), errors);

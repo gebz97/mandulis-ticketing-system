@@ -1,6 +1,7 @@
 package org.mandulis.mts.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.mandulis.mts.dto.UserGroupDetails;
 import org.mandulis.mts.dto.request.GroupRequest;
 import org.mandulis.mts.dto.GroupResponse;
 import org.mandulis.mts.entity.Group;
@@ -59,5 +60,13 @@ public class GroupService {
             throw new EntityNotFoundException("Group with id:" + id + " not found");
         }
         groupRepository.deleteById(id);
+    }
+
+    public static UserGroupDetails convertEntityToUserGroupDetailsDto(Group entity) {
+        return new UserGroupDetails(
+                entity.getId(),
+                entity.getName(),
+                entity.getDescription()
+        );
     }
 }

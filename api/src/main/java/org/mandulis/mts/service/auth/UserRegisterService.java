@@ -10,6 +10,7 @@ import org.mandulis.mts.entity.User;
 import org.mandulis.mts.enums.Role;
 import org.mandulis.mts.exception.UserAlreadyExistsException;
 import org.mandulis.mts.repository.UserRepository;
+import org.mandulis.mts.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,13 +49,15 @@ public class UserRegisterService {
                 .build();
         User savedUser = userRepository.save(user);
 
-        return createUserAndReturnUserResponse(savedUser);
+        return UserService.convertEntityToUserResponseDto(savedUser);
     }
 
+    /*
     private static UserResponse createUserAndReturnUserResponse(User savedUser) {
-        List<Group> groups = (savedUser.getGroups() == null || savedUser.getGroups().isEmpty()) ?
-                Collections.emptyList() : savedUser.getGroups();
+        //List<Group> groups = (savedUser.getGroups() == null || savedUser.getGroups().isEmpty()) ?
+        //        Collections.emptyList() : savedUser.getGroups();
 
+        /*
         return new UserResponse(
                 savedUser.getId(),
                 savedUser.getUsername(),
@@ -64,5 +67,7 @@ public class UserRegisterService {
                 savedUser.getRole(),
                 savedUser.getEmail()
         );
+        return UserService.convertEntityToUserResponseDto(savedUser);
     }
+    */
 }

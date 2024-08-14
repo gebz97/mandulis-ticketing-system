@@ -122,12 +122,14 @@ public class TicketService {
         ticketResponse.setTitle(ticket.getTitle());
         ticketResponse.setDescription(ticket.getDescription());
         ticketResponse.setPriority(ticket.getPriority());
-        ticketResponse.setUserName(ticket.getRequester().getUsername());
+        ticketResponse.setUsername(ticket.getRequester().getUsername());
         ticketResponse.setCategoryName(ticket.getCategory().getName());
-        ticketResponse.setComments(ticket.getComments()
-                .stream()
-                .map(Comment::getContent)
-                .collect(Collectors.toList()));
+        if (ticket.getComments() != null) {
+            ticketResponse.setComments(ticket.getComments()
+                    .stream()
+                    .map(Comment::getContent)
+                    .collect(Collectors.toList()));
+        }
         ticketResponse.setAttachments(ticket.getAttachments()
                 .stream()
                 .map(Attachment::getFileName)

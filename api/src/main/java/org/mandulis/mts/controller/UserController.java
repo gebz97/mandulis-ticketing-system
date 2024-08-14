@@ -24,18 +24,16 @@ public class UserController {
     @GetMapping("/fullinfo/id={id}")
     public ResponseEntity<Object> getFullUserInfoById(@PathVariable Long id) {
         Optional<UserResponse> foundUser = userService.findUserResponseById(id);
-        if (foundUser.isPresent()) {
-            return ResponseEntity.ok(foundUser.get());
-        }
-        return ResponseEntity.notFound().build();
+        return foundUser
+                .<ResponseEntity<Object>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/fullinfo/name={name}")
     public ResponseEntity<Object> getFullUserInfoByName(@PathVariable String name) {
         Optional<UserResponse> foundUser = userService.findUserResponseByUsername(name);
-        if (foundUser.isPresent()) {
-            return ResponseEntity.ok(foundUser.get());
-        }
-        return ResponseEntity.notFound().build();
+        return foundUser.
+                <ResponseEntity<Object>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

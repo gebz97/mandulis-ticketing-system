@@ -1,8 +1,8 @@
 package org.mandulis.mts.controller;
 
 import jakarta.validation.Valid;
-import org.mandulis.mts.dto.GroupRequest;
 import org.mandulis.mts.dto.GroupResponse;
+import org.mandulis.mts.dto.request.GroupRequest;
 import org.mandulis.mts.service.GroupService;
 import org.mandulis.mts.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
