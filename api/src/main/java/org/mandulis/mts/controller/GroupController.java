@@ -1,15 +1,14 @@
 package org.mandulis.mts.controller;
 
+import jakarta.validation.Valid;
+import org.mandulis.mts.dto.GroupRequest;
 import org.mandulis.mts.dto.GroupResponse;
 import org.mandulis.mts.service.GroupService;
 import org.mandulis.mts.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,5 +36,16 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         return ResponseEntity.ok(group.get());
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createNewGroup(@Valid @RequestBody GroupRequest groupRequest) {
+        GroupResponse newGroup = groupService.save(groupRequest);
+        if (newGroup == null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "Invalid Input");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        return ResponseEntity.ok(newGroup);
     }
 }

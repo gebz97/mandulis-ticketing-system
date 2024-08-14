@@ -1,6 +1,6 @@
 package org.mandulis.mts.service;
 
-import org.mandulis.mts.entity.SLA;
+import org.mandulis.mts.entity.stale.SLA;
 import org.mandulis.mts.repository.SLARepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -3,6 +3,7 @@ package org.mandulis.mts.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.mandulis.mts.entity.listener.TicketEntityListener;
+import org.mandulis.mts.entity.stale.SLA;
 
 import java.time.LocalDateTime;
 import java.util.List;

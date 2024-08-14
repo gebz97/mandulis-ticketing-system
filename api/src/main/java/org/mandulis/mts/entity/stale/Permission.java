@@ -1,7 +1,9 @@
-package org.mandulis.mts.entity;
+package org.mandulis.mts.entity.stale;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.mandulis.mts.entity.Role;
+import org.mandulis.mts.entity.User;
 
 import java.util.List;
 

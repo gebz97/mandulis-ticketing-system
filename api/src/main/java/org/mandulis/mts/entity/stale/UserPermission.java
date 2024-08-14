@@ -1,7 +1,8 @@
-package org.mandulis.mts.entity;
+package org.mandulis.mts.entity.stale;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.mandulis.mts.entity.User;
 
 @Entity
 @Table(name = "user_permissions")

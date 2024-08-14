@@ -1,6 +1,6 @@
 package org.mandulis.mts.security;
 
-import org.mandulis.mts.entity.Permission;
+import org.mandulis.mts.entity.stale.Permission;
 import org.mandulis.mts.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

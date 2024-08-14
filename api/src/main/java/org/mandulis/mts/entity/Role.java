@@ -3,6 +3,7 @@ package org.mandulis.mts.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.mandulis.mts.entity.stale.Permission;
 
 import java.util.List;
 
