@@ -6,7 +6,7 @@ import org.mandulis.mts.repository.CategoryRepository;
 import org.mandulis.mts.entity.Ticket;
 import org.mandulis.mts.repository.TicketRepository;
 import org.mandulis.mts.repository.UserRepository;
-import org.mandulis.mts.dto.TicketRequest;
+import org.mandulis.mts.dto.request.TicketRequest;
 import org.mandulis.mts.dto.TicketResponse;
 import org.mandulis.mts.entity.spec.TicketSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
