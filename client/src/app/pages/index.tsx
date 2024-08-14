@@ -21,10 +21,19 @@ export const createRouter = (queryClient: QueryClient) =>
       },
     },
     {
-      path: "/users/register",
+      path: "/users/registration",
       lazy: async () => {
-        const { RegisterPage } = await import("./users/register");
-        return { Component: RegisterPage };
+        const { RegistrationPage } = await import("./users/registration");
+        return { Component: RegistrationPage };
+      },
+    },
+    {
+      path: "/users/registration/complete",
+      lazy: async () => {
+        const { RegistrationCompletePage } = await import(
+          "./users/registration/complete"
+        );
+        return { Component: RegistrationCompletePage };
       },
     },
 

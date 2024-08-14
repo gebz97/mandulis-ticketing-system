@@ -1,12 +1,23 @@
 import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { registerFormSchema, RegisterFormSchema } from "../api/register";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Card, Group, PasswordInput, TextInput } from "@mantine/core";
+import {
+  RegisterUserInput,
+  registerUserInputSchema,
+  useRegisterUser,
+} from "../api/register-user";
+import { RegisterUserResponseModel } from "../dtos/register-user-response";
 
-export const RegisterCard: FC = () => {
-  const form = useForm<RegisterFormSchema>({
-    resolver: zodResolver(registerFormSchema),
+interface RegisterCardProps {
+  onSuccess: (data: RegisterUserResponseModel) => void;
+}
+
+export const RegistrationCard: FC<RegisterCardProps> = ({ onSuccess }) => {
+  const register = useRegisterUser();
+
+  const form = useForm<RegisterUserInput>({
+    resolver: zodResolver(registerUserInputSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -16,8 +27,14 @@ export const RegisterCard: FC = () => {
     },
   });
 
-  const handleSubmit = (data: RegisterFormSchema) => {
-    console.log(data);
+  const handleSubmit = (data: RegisterUserInput) => {
+    register.mutate(
+      { data: data },
+      {
+        onSuccess: onSuccess,
+        onError: (error) => console.log(error),
+      }
+    );
   };
 
   return (
@@ -93,7 +110,7 @@ export const RegisterCard: FC = () => {
             />
           )}
         />
-        <Button type="submit" fullWidth mt="xl">
+        <Button type="submit" fullWidth mt="xl" loading={register.isPending}>
           Create my account
         </Button>
       </form>

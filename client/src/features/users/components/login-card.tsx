@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { loginFormSchema, LoginFormSchema } from "../api/login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Anchor,
@@ -11,18 +10,34 @@ import {
   PasswordInput,
   TextInput,
 } from "@mantine/core";
+import {
+  LoginUserInput,
+  loginUserInputSchema,
+  useLoginUser,
+} from "../api/login-user";
 
-export const LoginCard: FC = () => {
-  const form = useForm<LoginFormSchema>({
-    resolver: zodResolver(loginFormSchema),
+interface LoginCardProps {
+  onSuccess: () => void;
+}
+
+export const LoginCard: FC<LoginCardProps> = ({ onSuccess }) => {
+  const login = useLoginUser();
+
+  const form = useForm<LoginUserInput>({
+    resolver: zodResolver(loginUserInputSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const handleSubmit = (data: LoginFormSchema) => {
-    console.log("Hello world!");
+  const handleSubmit = (data: LoginUserInput) => {
+    login.mutate(
+      { data: data },
+      {
+        onSuccess: onSuccess,
+      }
+    );
   };
 
   return (
@@ -61,7 +76,7 @@ export const LoginCard: FC = () => {
             Forgot password?
           </Anchor>
         </Group>
-        <Button type="submit" fullWidth mt="xl">
+        <Button type="submit" fullWidth mt="xl" loading={login.isPending}>
           Log in
         </Button>
       </form>
