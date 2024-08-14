@@ -2,9 +2,11 @@ package org.mandulis.mts.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.mandulis.mts.enums.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Permission;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
@@ -12,11 +14,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +36,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -45,14 +46,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "group_id")
     )
     private List<Group> groups;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_permissions",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
-    private List<Permission> permissions;
 
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Ticket> tickets;

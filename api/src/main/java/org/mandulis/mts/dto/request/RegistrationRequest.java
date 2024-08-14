@@ -1,4 +1,4 @@
-package org.mandulis.mts.dto;
+package org.mandulis.mts.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
