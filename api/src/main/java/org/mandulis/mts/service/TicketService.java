@@ -6,7 +6,7 @@ import org.mandulis.mts.repository.CategoryRepository;
 import org.mandulis.mts.entity.Ticket;
 import org.mandulis.mts.repository.TicketRepository;
 import org.mandulis.mts.repository.UserRepository;
-import org.mandulis.mts.dto.TicketRequest;
+import org.mandulis.mts.dto.request.TicketRequest;
 import org.mandulis.mts.dto.TicketResponse;
 import org.mandulis.mts.entity.spec.TicketSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,12 +122,14 @@ public class TicketService {
         ticketResponse.setTitle(ticket.getTitle());
         ticketResponse.setDescription(ticket.getDescription());
         ticketResponse.setPriority(ticket.getPriority());
-        ticketResponse.setUserName(ticket.getRequester().getUsername());
+        ticketResponse.setUsername(ticket.getRequester().getUsername());
         ticketResponse.setCategoryName(ticket.getCategory().getName());
-        ticketResponse.setComments(ticket.getComments()
-                .stream()
-                .map(Comment::getContent)
-                .collect(Collectors.toList()));
+        if (ticket.getComments() != null) {
+            ticketResponse.setComments(ticket.getComments()
+                    .stream()
+                    .map(Comment::getContent)
+                    .collect(Collectors.toList()));
+        }
         ticketResponse.setAttachments(ticket.getAttachments()
                 .stream()
                 .map(Attachment::getFileName)

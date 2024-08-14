@@ -1,8 +1,7 @@
 package org.mandulis.mts.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.mandulis.mts.dto.UserGroupDetails;
 import org.mandulis.mts.entity.Group;
 import org.mandulis.mts.enums.Role;
 
@@ -11,13 +10,15 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserResponse {
 
     private Long id;
     private String username;
     private String firstName;
     private String lastName;
-    private List<Group> groups;
+    private List<UserGroupDetails> groups;
     private Role role;
     private String email;
 

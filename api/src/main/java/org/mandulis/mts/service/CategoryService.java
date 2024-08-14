@@ -1,6 +1,6 @@
 package org.mandulis.mts.service;
 
-import org.mandulis.mts.dto.CategoryRequest;
+import org.mandulis.mts.dto.request.CategoryRequest;
 import org.mandulis.mts.dto.CategoryResponse;
 import org.mandulis.mts.entity.Category;
 import org.mandulis.mts.repository.CategoryRepository;

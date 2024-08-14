@@ -2,13 +2,13 @@ package org.mandulis.mts.dto;
 
 import lombok.*;
 
-@Data
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class CategoryRequest {
+public class UserGroupDetails {
+    private Long id;
     private String name;
     private String description;
 }
