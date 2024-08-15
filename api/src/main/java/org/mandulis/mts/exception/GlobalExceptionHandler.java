@@ -28,8 +28,8 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler({UserAlreadyExistsException.class})
-    public ResponseEntity<Object> badRequestHandler(UserAlreadyExistsException ex, WebRequest req){
+    @ExceptionHandler({UserAlreadyExistsException.class, UserUpdateException.class})
+    public ResponseEntity<Object> badRequestHandler(RuntimeException ex, WebRequest req){
         List<ErrorDetails> errors = new ArrayList<>();
         errors.add(new ErrorDetails(ex.getMessage(), req.getDescription(false), LocalDateTime.now()));
         log.error(ex.getMessage(), errors);
@@ -75,4 +75,5 @@ public class GlobalExceptionHandler {
         log.error(ex.getMessage(), errors);
         return ResponseHandler.errorResponse(errors, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }
