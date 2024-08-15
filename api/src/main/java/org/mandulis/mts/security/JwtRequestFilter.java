@@ -19,6 +19,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+// Fyi, you don't need to use JWT if you use Spring Security
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final WebUserDetailsService userDetailsService;
