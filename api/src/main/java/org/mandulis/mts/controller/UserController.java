@@ -16,22 +16,33 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
 
-    @Autowired
+    // @Autowired isn't needed anymore https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-collaborators.html
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllUsers() {
-        return ResponseEntity.ok(userService.findAllUsers());
+    public List<UserResponse> getAllUsers() {
+        return userService.findAllUsers();
     }
+
 
     @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateOrUpdateUserRequest request) {
+        // if you really want to add this httpstatus, this function's output should be typed as ResponseEntity<UserResponse>
+        // in general, don't use wildcare (?) unless you have no choice
         UserResponse createdUser = userService.saveUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
+    
+    // in this case, I would have done it this way because, most of the time, in front end, you won't care about if it's a 200 or a 201
+    // @PostMapping
+    // public UserResponse createUser(@Valid @RequestBody CreateOrUpdateUserRequest request) {
+        // return userService.saveUser(request);
+    // }
 
+    // if you want your URI to look like this '/api/v1/public/users/1', you only need "/{id}"
+    // @GetMapping("{id}")
     @GetMapping("/id={id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         Optional<UserResponse> foundUser = userService.findUserResponseById(id);
