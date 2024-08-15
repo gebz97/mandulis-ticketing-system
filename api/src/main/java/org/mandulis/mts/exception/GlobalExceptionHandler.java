@@ -75,4 +75,5 @@ public class GlobalExceptionHandler {
         log.error(ex.getMessage(), errors);
         return ResponseHandler.errorResponse(errors, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }
