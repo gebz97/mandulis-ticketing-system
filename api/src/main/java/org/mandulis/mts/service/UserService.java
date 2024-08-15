@@ -12,12 +12,15 @@ import org.mandulis.mts.exception.UserUpdateException;
 import org.mandulis.mts.exception.UserValidationException;
 import org.mandulis.mts.repository.UserRepository;
 import org.mandulis.mts.dto.response.UserResponse;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.mandulis.mts.specification.UserSpecification.*;
 
 @Service
 @RequiredArgsConstructor
@@ -68,10 +71,10 @@ public class UserService {
     public List<UserResponse> findAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserResponse> userResponses = new ArrayList<>();
-        for (User user : users) {
-            userResponses.add(convertEntityToUserResponseDto(user));
-        }
-        return userResponses;
+//        for (User user : users) {
+//            userResponses.add(convertEntityToUserResponseDto(user));
+//        }
+        return users.stream().map(UserService::convertEntityToUserResponseDto).toList();
     }
 
     public boolean deleteUserById(Long id) {
@@ -135,4 +138,18 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public Object searchUsers(String username, String firstName, String lastName, String email) {
+        Specification<User> filters = Specification.where(hasUsernameLike(username))
+                .or(hasFirstNameLike(firstName))
+                .or(hasLastNameLike(lastName))
+                .or(hasEmailLike(email));
+        List<User> users = userRepository.findAll(filters);
+
+        if (users.isEmpty()) {
+            throw new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
+        }
+
+        return users.stream().map(UserService::convertEntityToUserResponseDto).toList();
+    }
 }

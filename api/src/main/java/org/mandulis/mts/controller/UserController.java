@@ -67,4 +67,13 @@ public class UserController {
                 <ResponseEntity<Object>>map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchUsers(@RequestParam(required = false) String username,
+                                        @RequestParam(required = false) String firstName,
+                                        @RequestParam(required = false) String lastName,
+                                        @RequestParam(required = false) String email) {
+
+        return ResponseEntity.ok(userService.searchUsers(username, firstName, lastName, email));
+    }
 }
