@@ -70,17 +70,16 @@ public class UserService {
     @Transactional
     public List<UserResponse> findAllUsers() {
         List<User> users = userRepository.findAll();
-        List<UserResponse> userResponses = new ArrayList<>();
+        //List<UserResponse> userResponses = new ArrayList<>();
 //        for (User user : users) {
 //            userResponses.add(convertEntityToUserResponseDto(user));
 //        }
         return users.stream().map(UserService::convertEntityToUserResponseDto).toList();
     }
 
-    public boolean deleteUserById(Long id) {
+    public void deleteUserById(Long id) {
         try {
             userRepository.deleteById(id);
-            return true;
         } catch (Exception e) {
             throw new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
         }
@@ -139,7 +138,7 @@ public class UserService {
     }
 
     @Transactional
-    public Object searchUsers(String username, String firstName, String lastName, String email) {
+    public List<UserResponse> searchUsers(String username, String firstName, String lastName, String email) {
         Specification<User> filters = Specification.where(hasUsernameLike(username))
                 .or(hasFirstNameLike(firstName))
                 .or(hasLastNameLike(lastName))
@@ -147,7 +146,7 @@ public class UserService {
         List<User> users = userRepository.findAll(filters);
 
         if (users.isEmpty()) {
-            throw new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
+            return new ArrayList<>();
         }
 
         return users.stream().map(UserService::convertEntityToUserResponseDto).toList();
