@@ -8,6 +8,7 @@ import org.mandulis.mts.entity.User;
 import org.mandulis.mts.enums.Role;
 import org.mandulis.mts.exception.UserAlreadyExistsException;
 import org.mandulis.mts.exception.UserNotFoundException;
+import org.mandulis.mts.exception.UserUpdateException;
 import org.mandulis.mts.exception.UserValidationException;
 import org.mandulis.mts.repository.UserRepository;
 import org.mandulis.mts.dto.response.UserResponse;
@@ -108,19 +109,25 @@ public class UserService {
 
     @Transactional
     public UserResponse updateUserById(Long id, CreateOrUpdateUserRequest request){
-
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
-            if (userRepository.existsByEmail(request.getEmail()) ||
-                    userRepository.existsByUsername(request.getUsername())) {
-                throw new UserValidationException(ErrorMessages.USER_UNIQUE_VALUES_VALIDATION);
-            }
             User user = existingUser.get();
             user.setFirstName(request.getFirstName());
             user.setLastName(request.getLastName());
-            user.setEmail(request.getEmail());
             user.setRole(request.getRole());
+
+            if(!existingUser.get().getEmail().equals(request.getEmail())
+                    && userRepository.existsByEmail(request.getEmail())) {
+                throw new UserUpdateException(ErrorMessages.USER_UNIQUE_VALUES_VALIDATION);
+            }
+            user.setEmail(request.getEmail());
+
+            if(!existingUser.get().getUsername().equals(request.getUsername())
+                    && userRepository.existsByUsername(request.getUsername())) {
+                throw new UserUpdateException(ErrorMessages.USER_UNIQUE_VALUES_VALIDATION);
+            }
             user.setUsername(request.getUsername());
+
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             return convertEntityToUserResponseDto(userRepository.save(user));
         } else {
