@@ -1,10 +1,9 @@
 package org.mandulis.mts.controller;
 
 import jakarta.validation.Valid;
-import org.mandulis.mts.dto.GroupResponse;
+import org.mandulis.mts.dto.response.GroupResponse;
 import org.mandulis.mts.dto.request.GroupRequest;
 import org.mandulis.mts.service.GroupService;
-import org.mandulis.mts.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +14,14 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/user/groups")
+@RequestMapping("/api/v1/public/groups")
 public class GroupController {
 
     private final GroupService groupService;
-    private final UserService userService;
 
     @Autowired
-    public GroupController(final GroupService groupService, final UserService userService) {
+    public GroupController(final GroupService groupService) {
         this.groupService = groupService;
-        this.userService = userService;
     }
 
     @GetMapping("/id={id}")
@@ -39,7 +36,7 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createNewGroup(@Valid @RequestBody GroupRequest groupRequest) {
+    public ResponseEntity<?> createGroup(@Valid @RequestBody GroupRequest groupRequest) {
         GroupResponse newGroup = groupService.save(groupRequest);
         if (newGroup == null) {
             Map<String, String> response = new HashMap<>();
@@ -47,5 +44,31 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
         return ResponseEntity.ok(newGroup);
+    }
+
+    @PutMapping(value = "/id={id}")
+    public ResponseEntity<?> updateGroup(@PathVariable("id") Long id, @RequestBody GroupRequest request) {
+        try {
+            GroupResponse group = groupService.update(id, request);
+            return ResponseEntity.ok(group);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "Category not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    @DeleteMapping(value = "/id={id}")
+    public ResponseEntity<?> deleteGroup(@PathVariable("id") Long id) {
+        try {
+            groupService.deleteById(id);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Group deleted successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "Group not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 }

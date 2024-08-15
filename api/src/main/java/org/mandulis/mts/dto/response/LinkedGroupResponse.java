@@ -1,6 +1,7 @@
-package org.mandulis.mts.dto;
+package org.mandulis.mts.dto.response;
 
 import lombok.*;
+import org.mandulis.mts.dto.GroupMember;
 
 import java.util.List;
 
