@@ -1,13 +1,13 @@
 # User API (v1)
 
 ## Base URL
-`/api/v1/public/users`
+`/api/v1/user/users`
 
 ## Endpoints
 
 ### Get All Users
 
-- **URL:** `/api/v1/public/users`
+- **URL:** `/api/v1/user/users`
 - **Method:** `GET`
 - **Response:**
   - **Status:** `200 OK`
@@ -15,7 +15,7 @@
 
 ### Create User
 
-- **URL:** `/api/v1/public/users`
+- **URL:** `/api/v1/user/users`
 - **Method:** `POST`
 - **Request Body:**
   - `UserRequest` object
@@ -25,7 +25,7 @@
 
 ### Get User by ID
 
-- **URL:** `/api/v1/public/users/id={id}`
+- **URL:** `/api/v1/user/users/id={id}`
 - **Method:** `GET`
 - **Path Variable:**
   - `id` (Long) - ID of the user
@@ -35,7 +35,7 @@
 
 ### Update User by ID
 
-- **URL:** `/api/v1/public/users/id={id}`
+- **URL:** `/api/v1/user/users/id={id}`
 - **Method:** `PUT`
 - **Path Variable:**
   - `id` (Long) - ID of the user
@@ -47,7 +47,7 @@
 
 ### Delete User by ID
 
-- **URL:** `/api/v1/public/users/id={id}`
+- **URL:** `/api/v1/user/users/id={id}`
 - **Method:** `DELETE`
 - **Path Variable:**
   - `id` (Long) - ID of the user
@@ -56,7 +56,7 @@
 
 ### Get Full User Info by ID
 
-- **URL:** `/api/v1/public/users/fullinfo/id={id}`
+- **URL:** `/api/v1/user/users/fullinfo/id={id}`
 - **Method:** `GET`
 - **Path Variable:**
   - `id` (Long) - ID of the user
@@ -67,7 +67,7 @@
 
 ### Get Full User Info by Name
 
-- **URL:** `/api/v1/public/users/fullinfo/name={name}`
+- **URL:** `/api/v1/user/users/fullinfo/name={name}`
 - **Method:** `GET`
 - **Path Variable:**
   - `name` (String) - Username of the user
@@ -78,7 +78,7 @@
 
 ### Search Users
 
-- **URL:** `/api/v1/public/users/search`
+- **URL:** `/api/v1/user/users/search`
 - **Method:** `GET`
 - **Query Parameters:**
   - `username` (String) - Optional

@@ -1,5 +1,6 @@
 package org.mandulis.mts.service;
 
+import jakarta.transaction.Transactional;
 import org.mandulis.mts.dto.request.MembershipRequest;
 import org.mandulis.mts.dto.response.MembershipResponse;
 import org.mandulis.mts.entity.Group;
@@ -30,6 +31,7 @@ public class MembershipService {
         this.groupRepository = groupRepository;
     }
 
+    @Transactional
     public Optional<MembershipResponse> addMembership(MembershipRequest request) {
         Optional<User> user = userRepository.findById(request.getUserId());
         Optional<Group> group = groupRepository.findById(request.getGroupId());
@@ -60,6 +62,7 @@ public class MembershipService {
         return Optional.empty();
     }
 
+    @Transactional
     public List<MembershipResponse> addMultipleMemberships(List<MembershipRequest> requests) {
         return requests.stream()
                 .map(this::addMembership)
@@ -68,6 +71,7 @@ public class MembershipService {
                 .toList();
     }
 
+    @Transactional
     public boolean deleteMembership(MembershipRequest request) {
         Optional<User> user = userRepository.findById(request.getUserId());
         Optional<Group> group = groupRepository.findById(request.getGroupId());
@@ -83,6 +87,7 @@ public class MembershipService {
     }
 
     // Method to delete multiple memberships
+    @Transactional
     public List<MembershipRequest> deleteMultipleMemberships(List<MembershipRequest> requests) {
         return requests.stream()
                 .filter(this::deleteMembership)

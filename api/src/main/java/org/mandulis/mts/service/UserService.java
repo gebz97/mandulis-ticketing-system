@@ -2,7 +2,7 @@ package org.mandulis.mts.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.mandulis.mts.dto.request.CreateOrUpdateUserRequest;
+import org.mandulis.mts.dto.request.UserRequest;
 import org.mandulis.mts.dto.response.ErrorMessages;
 import org.mandulis.mts.entity.User;
 import org.mandulis.mts.enums.Role;
@@ -85,7 +85,7 @@ public class UserService {
         }
     }
 
-    public UserResponse saveUser(CreateOrUpdateUserRequest request) {
+    public UserResponse saveUser(UserRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail()) ||
                 userRepository.existsByUsername(request.getUsername())) {
@@ -110,7 +110,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateUserById(Long id, CreateOrUpdateUserRequest request){
+    public UserResponse updateUserById(Long id, UserRequest request){
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
             User user = existingUser.get();
