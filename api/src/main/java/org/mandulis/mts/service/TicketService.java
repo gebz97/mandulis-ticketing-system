@@ -7,7 +7,7 @@ import org.mandulis.mts.entity.Ticket;
 import org.mandulis.mts.repository.TicketRepository;
 import org.mandulis.mts.repository.UserRepository;
 import org.mandulis.mts.dto.request.TicketRequest;
-import org.mandulis.mts.dto.TicketResponse;
+import org.mandulis.mts.dto.response.TicketResponse;
 import org.mandulis.mts.entity.spec.TicketSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;

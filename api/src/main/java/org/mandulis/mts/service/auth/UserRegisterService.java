@@ -51,23 +51,4 @@ public class UserRegisterService {
 
         return UserService.convertEntityToUserResponseDto(savedUser);
     }
-
-    /*
-    private static UserResponse createUserAndReturnUserResponse(User savedUser) {
-        //List<Group> groups = (savedUser.getGroups() == null || savedUser.getGroups().isEmpty()) ?
-        //        Collections.emptyList() : savedUser.getGroups();
-
-        /*
-        return new UserResponse(
-                savedUser.getId(),
-                savedUser.getUsername(),
-                savedUser.getFirstName(),
-                savedUser.getLastName(),
-                groups,
-                savedUser.getRole(),
-                savedUser.getEmail()
-        );
-        return UserService.convertEntityToUserResponseDto(savedUser);
-    }
-    */
 }

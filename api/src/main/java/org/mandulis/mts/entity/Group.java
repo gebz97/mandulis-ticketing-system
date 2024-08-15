@@ -21,7 +21,7 @@ public class Group {
     private String name;
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "memberships",
             joinColumns = @JoinColumn(name = "group_id"),
