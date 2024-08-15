@@ -1,9 +1,8 @@
 import { api } from "@/lib/api-client";
 import { MutationConfig } from "@/lib/react-query";
-import { MessageResponse } from "@/types/api";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
-import { RegisterUserResponseModel } from "../dtos/register-user-response";
+import { RegisterUserResponse } from "../models/register-user-response";
 
 export const registerUserInputSchema = z.object({
   username: z.string().min(3).max(20),
@@ -19,7 +18,7 @@ export const registerUser = ({
   data,
 }: {
   data: RegisterUserInput;
-}): Promise<RegisterUserResponseModel> => {
+}): Promise<RegisterUserResponse> => {
   // adjust later
   return api.post("/register", data);
 };

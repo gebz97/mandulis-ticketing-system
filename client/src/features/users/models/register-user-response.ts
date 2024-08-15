@@ -1,4 +1,4 @@
-export type RegisterUserResponseModel = {
+export type RegisterUserResponse = {
   firstName: string;
   lastName: string;
   email: string;

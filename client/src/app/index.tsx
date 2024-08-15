@@ -2,7 +2,7 @@ import { FC, useMemo } from "react";
 import { MainProvider } from "./main-provider";
 import { useQueryClient } from "@tanstack/react-query";
 import { RouterProvider } from "react-router-dom";
-import { createRouter } from "./pages";
+import { createRouter } from "./pages/routes";
 
 const AppRouter = () => {
   const queryClient = useQueryClient();

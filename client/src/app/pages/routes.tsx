@@ -12,6 +12,23 @@ export const createRouter = (queryClient: QueryClient) =>
       },
     },
 
+    // dashboard
+    {
+      path: "/dashboard",
+      lazy: async () => {
+        const { DashboardPage } = await import("./dashboard");
+        return { Component: DashboardPage };
+      },
+    },
+
+    {
+      path: "/tickets/create",
+      lazy: async () => {
+        const { CreateTicketPage } = await import("./tickets/create");
+        return { Component: CreateTicketPage };
+      },
+    },
+
     // users
     {
       path: "/users/login",

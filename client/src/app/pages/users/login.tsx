@@ -1,6 +1,6 @@
 import { AuthLayout } from "@/components/layouts/auth-layout";
-import { LoginCard } from "@/features/users/components/login-card";
-import { Anchor, Container, Title, Text } from "@mantine/core";
+import { LoginForm } from "@/features/users/components/login-form";
+import { Anchor, Container, Title, Text, Card } from "@mantine/core";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,11 +17,13 @@ export const LoginPage: FC = () => {
         <Title ta="center">Welcome back!</Title>
         <Text mb={30} c="dimmed" size="sm" ta="center" mt={5}>
           Do not have an account yet?{" "}
-          <Anchor href="/users/registration" size="sm">
+          <Anchor href="/user/registration" size="sm">
             Create account
           </Anchor>
         </Text>
-        <LoginCard onSuccess={handleLoginSuccess} />
+        <Card withBorder p={30}>
+          <LoginForm onSuccess={handleLoginSuccess} />
+        </Card>
       </Container>
     </AuthLayout>
   );
