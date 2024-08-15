@@ -21,12 +21,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<?> getAllUsers() {
         return ResponseEntity.ok(userService.findAllUsers());
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateOrUpdateUserRequest request) {
         UserResponse createdUser = userService.saveUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
