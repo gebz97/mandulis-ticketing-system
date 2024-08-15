@@ -1,7 +1,7 @@
 package org.mandulis.mts.controller;
 
 import jakarta.validation.Valid;
-import org.mandulis.mts.dto.request.CreateOrUpdateUserRequest;
+import org.mandulis.mts.dto.request.UserRequest;
 import org.mandulis.mts.service.UserService;
 import org.mandulis.mts.dto.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody CreateOrUpdateUserRequest request) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequest request) {
         UserResponse createdUser = userService.saveUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PutMapping("/id={id}")
-    public ResponseEntity<?> updateUserById(@PathVariable Long id, @Valid @RequestBody CreateOrUpdateUserRequest request) {
+    public ResponseEntity<?> updateUserById(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
         UserResponse updatedUser = userService.updateUserById(id, request);
         return ResponseEntity.ok(updatedUser);
     }
