@@ -2,12 +2,10 @@ package org.mandulis.mts.controller;
 
 import jakarta.validation.Valid;
 import org.mandulis.mts.dto.request.CreateOrUpdateUserRequest;
-import org.mandulis.mts.exception.UserAlreadyExistsException;
-import org.mandulis.mts.exception.UserNotFoundException;
-import org.mandulis.mts.exception.UserValidationException;
 import org.mandulis.mts.service.UserService;
 import org.mandulis.mts.dto.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +29,7 @@ public class UserController {
     @PostMapping("/")
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateOrUpdateUserRequest request) {
         UserResponse createdUser = userService.saveUser(request);
-        return ResponseEntity.ok(createdUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @GetMapping("/id={id}")
