@@ -100,8 +100,6 @@ public class UserService {
                     .build();
 
             User savedUser = userRepository.save(user);
-
-
             return convertEntityToUserResponseDto(savedUser);
         } catch (Exception e) {
             throw new UserValidationException(ErrorMessages.USER_UNIQUE_VALUES_VALIDATION);

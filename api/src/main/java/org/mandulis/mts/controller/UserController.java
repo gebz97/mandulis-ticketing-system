@@ -30,16 +30,8 @@ public class UserController {
 
     @PostMapping("/")
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateOrUpdateUserRequest request) {
-        try {
-            UserResponse createdUser = userService.saveUser(request);
-            return ResponseEntity.ok(createdUser);
-        }catch (Exception e) {
-           if(e instanceof UserAlreadyExistsException) {
-              throw e;
-           }
-           return ResponseEntity.badRequest().body("Error creating user.");
-        }
-
+        UserResponse createdUser = userService.saveUser(request);
+        return ResponseEntity.ok(createdUser);
     }
 
     @GetMapping("/id={id}")
@@ -50,15 +42,8 @@ public class UserController {
 
     @PutMapping("/id={id}")
     public ResponseEntity<?> updateUserById(@PathVariable Long id, @Valid @RequestBody CreateOrUpdateUserRequest request) {
-        try {
-            UserResponse updatedUser = userService.updateUserById(id, request);
-            return ResponseEntity.ok(updatedUser);
-        } catch (Exception e) {
-            if (e instanceof UserNotFoundException || e instanceof UserValidationException) {
-                throw e;
-            }
-            return ResponseEntity.notFound().build();
-        }
+        UserResponse updatedUser = userService.updateUserById(id, request);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/id={id}")
