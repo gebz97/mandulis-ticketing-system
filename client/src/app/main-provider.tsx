@@ -7,6 +7,8 @@ import { HelmetProvider } from "react-helmet-async";
 import { createTheme, MantineProvider } from "@mantine/core";
 
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+import { Notifications } from "@mantine/notifications";
 
 const theme = createTheme({
   defaultRadius: "xs",
@@ -19,7 +21,10 @@ export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
       <ErrorBoundary FallbackComponent={() => <div>Error occured</div>}>
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
-            <MantineProvider theme={theme}>{children}</MantineProvider>
+            <MantineProvider theme={theme}>
+              <Notifications />
+              {children}
+            </MantineProvider>
           </QueryClientProvider>
         </HelmetProvider>
       </ErrorBoundary>

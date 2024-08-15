@@ -28,6 +28,13 @@ export const createRouter = (queryClient: QueryClient) =>
         return { Component: CreateTicketPage };
       },
     },
+    {
+      path: "/tickets/:id/view",
+      lazy: async () => {
+        const { ViewTicketPage } = await import("./tickets/view");
+        return { Component: ViewTicketPage };
+      },
+    },
 
     // users
     {

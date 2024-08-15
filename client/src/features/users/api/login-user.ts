@@ -1,13 +1,13 @@
 import { api } from "@/lib/api-client";
 import { MutationConfig } from "@/lib/react-query";
-import { MessageResponse } from "@/types/api";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
+import { JwtResponse } from "../models/jwt-response";
 
 // adjust based on backend
 export const loginUserInputSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(5),
+  username: z.string().min(3).max(20),
+  password: z.string().min(6),
 });
 
 export type LoginUserInput = z.infer<typeof loginUserInputSchema>;
@@ -16,7 +16,7 @@ export const loginUser = ({
   data,
 }: {
   data: LoginUserInput;
-}): Promise<MessageResponse> => {
+}): Promise<JwtResponse> => {
   // adjust later
   return api.post("/users/login", data);
 };

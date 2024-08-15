@@ -5,17 +5,17 @@ import { Button, Group, PasswordInput, TextInput } from "@mantine/core";
 import {
   RegisterUserInput,
   registerUserInputSchema,
-  useRegisterUser,
 } from "../api/register-user";
-import { RegisterUserResponseModel } from "../models/register-user-response";
 
 interface RegisterFormProps {
-  onSuccess: (data: RegisterUserResponseModel) => void;
+  onSubmit: (data: RegisterUserInput) => void;
+  isLoading?: boolean;
 }
 
-export const RegistrationForm: FC<RegisterFormProps> = ({ onSuccess }) => {
-  const register = useRegisterUser();
-
+export const RegistrationForm: FC<RegisterFormProps> = ({
+  onSubmit,
+  isLoading = false,
+}) => {
   const form = useForm<RegisterUserInput>({
     resolver: zodResolver(registerUserInputSchema),
     defaultValues: {
@@ -27,18 +27,8 @@ export const RegistrationForm: FC<RegisterFormProps> = ({ onSuccess }) => {
     },
   });
 
-  const handleSubmit = (data: RegisterUserInput) => {
-    register.mutate(
-      { data: data },
-      {
-        onSuccess: onSuccess,
-        onError: (error) => console.log(error),
-      }
-    );
-  };
-
   return (
-    <form onSubmit={form.handleSubmit(handleSubmit)}>
+    <form onSubmit={form.handleSubmit(onSubmit)}>
       <Group grow>
         <Controller
           control={form.control}
@@ -109,7 +99,7 @@ export const RegistrationForm: FC<RegisterFormProps> = ({ onSuccess }) => {
           />
         )}
       />
-      <Button type="submit" fullWidth mt="xl" loading={register.isPending}>
+      <Button type="submit" fullWidth mt="xl" loading={isLoading}>
         Create my account
       </Button>
     </form>

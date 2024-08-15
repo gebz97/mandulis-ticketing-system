@@ -9,45 +9,31 @@ import {
   PasswordInput,
   TextInput,
 } from "@mantine/core";
-import {
-  LoginUserInput,
-  loginUserInputSchema,
-  useLoginUser,
-} from "../api/login-user";
+import { LoginUserInput, loginUserInputSchema } from "../api/login-user";
 
 interface LoginFormProps {
-  onSuccess: () => void;
+  onSubmit: (data: LoginUserInput) => void;
+  isLoading?: boolean;
 }
 
-export const LoginForm: FC<LoginFormProps> = ({ onSuccess }) => {
-  const login = useLoginUser();
-
+export const LoginForm: FC<LoginFormProps> = ({ onSubmit, isLoading }) => {
   const form = useForm<LoginUserInput>({
     resolver: zodResolver(loginUserInputSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
 
-  const handleSubmit = (data: LoginUserInput) => {
-    login.mutate(
-      { data: data },
-      {
-        onSuccess: onSuccess,
-      }
-    );
-  };
-
   return (
-    <form onSubmit={form.handleSubmit(handleSubmit)}>
+    <form onSubmit={form.handleSubmit(onSubmit)}>
       <Controller
         control={form.control}
-        name="email"
+        name="username"
         render={({ field, fieldState: { error } }) => (
           <TextInput
-            label="Email"
-            placeholder="Enter your email address"
+            label="Username"
+            placeholder="Enter your username"
             required
             error={error?.message}
             {...field}
@@ -74,7 +60,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSuccess }) => {
           Forgot password?
         </Anchor>
       </Group>
-      <Button type="submit" fullWidth mt="xl" loading={login.isPending}>
+      <Button type="submit" fullWidth mt="xl" loading={isLoading}>
         Log in
       </Button>
     </form>
