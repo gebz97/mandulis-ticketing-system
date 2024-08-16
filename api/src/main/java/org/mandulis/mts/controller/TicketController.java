@@ -36,7 +36,6 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-    @Transactional(readOnly = true)
     public Optional<TicketResponse> findById(@PathVariable Long id) {
         return ticketService.findById(id);
     }
@@ -57,7 +56,6 @@ public class TicketController {
     }
 
     @GetMapping("/filter")
-    @Transactional(readOnly = true)
     public List<TicketResponse> filterTickets(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String categoryName,
@@ -72,7 +70,6 @@ public class TicketController {
     }
 
     @GetMapping("/filter/paged")
-    @Transactional(readOnly = true)
     public Page<TicketResponse> filterTicketsPaged(
             Pageable pageable,
             @RequestParam(required = false) String title,
