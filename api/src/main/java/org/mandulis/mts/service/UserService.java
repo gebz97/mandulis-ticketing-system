@@ -142,10 +142,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserResponse> filter(String username, String firstName, String lastName, String email) {
-        Specification<User> filters = Specification.where(hasUsernameLike(username))
-                .or(hasFirstNameLike(firstName))
-                .or(hasLastNameLike(lastName))
-                .or(hasEmailLike(email));
+        Specification<User> filters = userFilterSpecification(username, firstName, lastName, email);
 
         List<UserResponse> users = userRepository
                 .findAll(filters)
@@ -157,15 +154,34 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Page<UserResponse> filter(Pageable pageable, String username, String firstName, String lastName, String email) {
-        Specification<User> filters = Specification.where(hasUsernameLike(username))
-                .or(hasFirstNameLike(firstName))
-                .or(hasLastNameLike(lastName))
-                .or(hasEmailLike(email));
+        Specification<User> filters = userFilterSpecification(username, firstName, lastName, email);
 
         Page<UserResponse> users = userRepository
                 .findAll(filters, pageable)
                 .map(UserService::convertEntityToUserResponseDto);
 
         return users;
+    }
+
+    private Specification<User> userFilterSpecification(String username, String firstName, String lastName, String email) {
+        Specification<User> spec = Specification.where(null);
+
+        if (username != null) {
+            spec = spec.and(hasUsernameLike(username));
+        }
+
+        if (firstName != null) {
+            spec = spec.and(hasFirstNameLike(firstName));
+        }
+
+        if (lastName != null) {
+            spec = spec.and(hasLastNameLike(lastName));
+        }
+
+        if (email != null) {
+            spec = spec.and(hasEmailLike(email));
+        }
+
+        return spec;
     }
 }

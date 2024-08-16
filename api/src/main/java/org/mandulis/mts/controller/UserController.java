@@ -85,7 +85,12 @@ public class UserController {
     }
 
     @GetMapping("/filter/paged")
-    public Page<UserResponse> searchUsersPaged(Pageable pageable, @RequestParam(required = false) String username, @RequestParam(required = false) String firstName, @RequestParam(required = false) String lastName, @RequestParam(required = false) String email) {
+    public Page<UserResponse> searchUsersPaged(Pageable pageable,
+                                               @RequestParam(required = false)
+                                               String username,
+                                               @RequestParam(required = false) String firstName,
+                                               @RequestParam(required = false) String lastName,
+                                               @RequestParam(required = false) String email) {
         Page<UserResponse> users = userService.filter(pageable, username, firstName, lastName, email);
         return users;
     }
