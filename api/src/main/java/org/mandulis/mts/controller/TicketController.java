@@ -5,6 +5,9 @@ import org.mandulis.mts.service.TicketService;
 import org.mandulis.mts.dto.request.TicketRequest;
 import org.mandulis.mts.dto.response.TicketResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -25,6 +28,11 @@ public class TicketController {
     @GetMapping
     public List<TicketResponse> findAll() {
         return ticketService.findAll();
+    }
+
+    @GetMapping("/paginate")
+    public Page<TicketResponse> findAll(Pageable pageable) {
+        return ticketService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
@@ -57,8 +65,22 @@ public class TicketController {
             @RequestParam(required = false) LocalDateTime createdBefore,
             @RequestParam(required = false) LocalDateTime updatedAfter,
             @RequestParam(required = false) LocalDateTime updatedBefore) {
-        return ticketService.filterTickets(
-                title, categoryName, priority, userName, createdAfter, createdBefore, updatedAfter, updatedBefore
+        return ticketService.filterTickets(title, categoryName, priority, userName, createdAfter, createdBefore, updatedAfter, updatedBefore
+        );
+    }
+
+    @GetMapping("/filter/paginate")
+    public Page<TicketResponse> filterTicketsPaged(
+            Pageable pageable,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String categoryName,
+            @RequestParam(required = false) Ticket.Priority priority,
+            @RequestParam(required = false) String userName,
+            @RequestParam(required = false) LocalDateTime createdAfter,
+            @RequestParam(required = false) LocalDateTime createdBefore,
+            @RequestParam(required = false) LocalDateTime updatedAfter,
+            @RequestParam(required = false) LocalDateTime updatedBefore) {
+        return ticketService.filterTickets(pageable, title, categoryName, priority, userName, createdAfter, createdBefore, updatedAfter, updatedBefore
         );
     }
 }

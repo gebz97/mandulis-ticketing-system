@@ -10,9 +10,11 @@ import org.mandulis.mts.dto.request.TicketRequest;
 import org.mandulis.mts.dto.response.TicketResponse;
 import org.mandulis.mts.entity.spec.TicketSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,12 +35,19 @@ public class TicketService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<TicketResponse> findAll() {
-        return ticketRepository.findAll().stream()
-                .map(this::convertToResponseDTO)
-                .collect(Collectors.toList());
+        List<TicketResponse> tickets =  ticketRepository.findAll().stream().map(this::convertToResponseDTO).toList();
+        return tickets;
     }
 
+    @Transactional(readOnly = true)
+    public Page<TicketResponse> findAll(Pageable pageable) {
+        Page<TicketResponse> tickets =  ticketRepository.findAll(pageable).map(this::convertToResponseDTO);
+        return tickets;
+    }
+
+    @Transactional(readOnly = true)
     public Optional<TicketResponse> findById(Long id) {
         return ticketRepository.findById(id)
                 .map(this::convertToResponseDTO);
@@ -63,6 +72,7 @@ public class TicketService {
         return convertToResponseDTO(ticketRepository.save(ticket));
     }
 
+    @Transactional(readOnly = true)
     public List<TicketResponse> filterTickets(
             String title,
             String categoryName,
@@ -73,36 +83,26 @@ public class TicketService {
             LocalDateTime updatedAfter,
             LocalDateTime updatedBefore
     ) {
-        Specification<Ticket> spec = Specification.where(null);
-
-        if (title != null) {
-            spec = spec.and(TicketSpecification.hasTitle(title));
-        }
-        if (categoryName != null) {
-            spec = spec.and(TicketSpecification.hasCategoryName(categoryName));
-        }
-        if (priority != null) {
-            spec = spec.and(TicketSpecification.hasPriority(priority));
-        }
-        if (userName != null) {
-            spec = spec.and(TicketSpecification.hasUserName(userName));
-        }
-        if (createdAfter != null) {
-            spec = spec.and(TicketSpecification.createdAfter(createdAfter));
-        }
-        if (createdBefore != null) {
-            spec = spec.and(TicketSpecification.createdBefore(createdBefore));
-        }
-        if (updatedAfter != null) {
-            spec = spec.and(TicketSpecification.updatedAfter(updatedAfter));
-        }
-        if (updatedBefore != null) {
-            spec = spec.and(TicketSpecification.updatedBefore(updatedBefore));
-        }
-
+        Specification<Ticket> spec = ticketFilterSpecification(title, categoryName, priority, userName, createdAfter, createdBefore, updatedAfter, updatedBefore);
         return ticketRepository.findAll(spec).stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<TicketResponse> filterTickets(Pageable pageable,
+                                                   String title,
+                                                   String categoryName,
+                                                   Ticket.Priority priority,
+                                                   String userName,
+                                                   LocalDateTime createdAfter,
+                                                   LocalDateTime createdBefore,
+                                                   LocalDateTime updatedAfter,
+                                                   LocalDateTime updatedBefore) {
+
+        Specification<Ticket> spec = ticketFilterSpecification(title, categoryName, priority, userName, createdAfter, createdBefore, updatedAfter, updatedBefore);
+
+        return ticketRepository.findAll(spec, pageable).map(this::convertToResponseDTO);
     }
 
     private Ticket convertToEntity(TicketRequest ticketRequest) {
@@ -139,5 +139,45 @@ public class TicketService {
         ticketResponse.setCreatedDate(ticket.getCreatedAt());
         ticketResponse.setUpdatedDate(ticket.getUpdatedAt());
         return ticketResponse;
+    }
+
+    private Specification<Ticket> ticketFilterSpecification(
+            String title,
+            String categoryName,
+            Ticket.Priority priority,
+            String userName,
+            LocalDateTime createdAfter,
+            LocalDateTime createdBefore,
+            LocalDateTime updatedAfter,
+            LocalDateTime updatedBefore
+    ) {
+        Specification<Ticket> spec = Specification.where(null);
+
+        if (title != null) {
+            spec = spec.and(TicketSpecification.hasTitle(title));
+        }
+        if (categoryName != null) {
+            spec = spec.and(TicketSpecification.hasCategoryName(categoryName));
+        }
+        if (priority != null) {
+            spec = spec.and(TicketSpecification.hasPriority(priority));
+        }
+        if (userName != null) {
+            spec = spec.and(TicketSpecification.hasUserName(userName));
+        }
+        if (createdAfter != null) {
+            spec = spec.and(TicketSpecification.createdAfter(createdAfter));
+        }
+        if (createdBefore != null) {
+            spec = spec.and(TicketSpecification.createdBefore(createdBefore));
+        }
+        if (updatedAfter != null) {
+            spec = spec.and(TicketSpecification.updatedAfter(updatedAfter));
+        }
+        if (updatedBefore != null) {
+            spec = spec.and(TicketSpecification.updatedBefore(updatedBefore));
+        }
+
+        return spec;
     }
 }

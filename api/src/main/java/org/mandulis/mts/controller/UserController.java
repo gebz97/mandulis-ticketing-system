@@ -5,6 +5,8 @@ import org.mandulis.mts.dto.request.UserRequest;
 import org.mandulis.mts.service.UserService;
 import org.mandulis.mts.dto.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,14 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> users = userService.findAllUsers();
+        List<UserResponse> users = userService.findAll();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/paginate")
+    public Page<UserResponse> getAllUsersPaged(Pageable pageable) {
+        Page<UserResponse> users = userService.findAll(pageable);
+        return users;
     }
 
     @PostMapping
@@ -67,12 +75,23 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
-    @GetMapping("/search")
+    @GetMapping("/filter")
     public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam(required = false) String username,
                                                           @RequestParam(required = false) String firstName,
                                                           @RequestParam(required = false) String lastName,
                                                           @RequestParam(required = false) String email) {
-        List<UserResponse> users = userService.searchUsers(username, firstName, lastName, email);
+        List<UserResponse> users = userService.filter(username, firstName, lastName, email);
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/filter/paginate")
+    public Page<UserResponse> searchUsersPaged(Pageable pageable,
+                                               @RequestParam(required = false)
+                                               String username,
+                                               @RequestParam(required = false) String firstName,
+                                               @RequestParam(required = false) String lastName,
+                                               @RequestParam(required = false) String email) {
+        Page<UserResponse> users = userService.filter(pageable, username, firstName, lastName, email);
+        return users;
     }
 }
