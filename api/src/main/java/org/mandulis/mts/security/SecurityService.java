@@ -1,7 +1,7 @@
 package org.mandulis.mts.security;
 
-import org.mandulis.mts.entity.Ticket;
-import org.mandulis.mts.repository.TicketRepository;
+import org.mandulis.mts.ticket.Ticket;
+import org.mandulis.mts.ticket.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;

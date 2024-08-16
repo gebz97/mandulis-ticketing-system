@@ -2,8 +2,8 @@ package org.mandulis.mts.exception;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.mandulis.mts.dto.response.ErrorDetails;
-import org.mandulis.mts.dto.response.ResponseHandler;
+import org.mandulis.mts.rest.ErrorDetails;
+import org.mandulis.mts.rest.ResponseHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
