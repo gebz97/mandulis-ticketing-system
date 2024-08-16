@@ -23,35 +23,24 @@ public class MembershipController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addSingle(@RequestBody MembershipRequest request) {
+    public ResponseEntity<MembershipResponse> addSingle(@RequestBody MembershipRequest request) {
         Optional<MembershipResponse> membershipResponse = membershipService.addMembership(request);
-        if (membershipResponse.isEmpty()) {
-
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "Either the user/group doesn't exist, or already a member");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(membershipResponse.get());
+        return membershipResponse
+                .map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null));
     }
 
     @PostMapping("/bulk")
-    public ResponseEntity<Object> addMultiple(
-            @RequestBody List<MembershipRequest> requests
-    ) {
+    public ResponseEntity<List<MembershipResponse>> addMultiple(@RequestBody List<MembershipRequest> requests) {
         List<MembershipResponse> membershipResponses = membershipService.addMultipleMemberships(requests);
-
         if (membershipResponses.isEmpty()) {
-
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "One or more invalid user or group");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-
         return ResponseEntity.ok(membershipResponses);
     }
 
     @DeleteMapping
-    public ResponseEntity<Object> deleteMembership(@RequestBody MembershipRequest request) {
+    public ResponseEntity<Map<String, String>> deleteMembership(@RequestBody MembershipRequest request) {
         boolean deleted = membershipService.deleteMembership(request);
         if (!deleted) {
             Map<String, String> response = new HashMap<>();
@@ -62,12 +51,10 @@ public class MembershipController {
     }
 
     @DeleteMapping("/bulk")
-    public ResponseEntity<Object> deleteMultiple(@RequestBody List<MembershipRequest> requests) {
+    public ResponseEntity<List<MembershipRequest>> deleteMultiple(@RequestBody List<MembershipRequest> requests) {
         List<MembershipRequest> deletedMemberships = membershipService.deleteMultipleMemberships(requests);
         if (deletedMemberships.isEmpty()) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "One or more invalid memberships");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         return ResponseEntity.ok(deletedMemberships);
     }

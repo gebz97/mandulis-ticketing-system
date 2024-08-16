@@ -1,4 +1,4 @@
-package org.mandulis.mts.specification;
+package org.mandulis.mts.entity.spec;
 
 import org.mandulis.mts.entity.User;
 import org.springframework.data.jpa.domain.Specification;
