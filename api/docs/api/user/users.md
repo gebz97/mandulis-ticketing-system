@@ -13,6 +13,15 @@
   - **Status:** `200 OK`
   - **Body:** List of `UserResponse` objects
 
+### Get All Users Paginated
+
+- **URL:** `/api/v1/user/users/paginate?page={page}&size={size}`
+- **Method:** `GET`
+- **Response:**
+  - **Status:** `200 OK`
+  - **Body:** Page of `UserResponse` object
+
+
 ### Create User
 
 - **URL:** `/api/v1/user/users`
@@ -76,9 +85,9 @@
   - **Body:** `UserResponse` object
   - **Status:** `404 Not Found`
 
-### Search Users
+### Filter Users
 
-- **URL:** `/api/v1/user/users/search`
+- **URL:** `/api/v1/user/users/filter`
 - **Method:** `GET`
 - **Query Parameters:**
   - `username` (String) - Optional
@@ -88,6 +97,19 @@
 - **Response:**
   - **Status:** `200 OK`
   - **Body:** List of `UserResponse` objects
+
+### Filter Users Paginated
+
+- **URL:** `/api/v1/user/users/filter/paginate?page={page}&size={size}`
+- **Method:** `GET`
+- **Query Parameters:**
+  - `username` (String) - Optional
+  - `firstName` (String) - Optional
+  - `lastName` (String) - Optional
+  - `email` (String) - Optional
+- **Response:**
+  - **Status:** `200 OK`
+  - **Body:** Page of `UserResponse` object
 
 ## DTOs
 

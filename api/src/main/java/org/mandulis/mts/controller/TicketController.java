@@ -30,7 +30,7 @@ public class TicketController {
         return ticketService.findAll();
     }
 
-    @GetMapping("/paged")
+    @GetMapping("/paginate")
     public Page<TicketResponse> findAll(Pageable pageable) {
         return ticketService.findAll(pageable);
     }
@@ -69,7 +69,7 @@ public class TicketController {
         );
     }
 
-    @GetMapping("/filter/paged")
+    @GetMapping("/filter/paginate")
     public Page<TicketResponse> filterTicketsPaged(
             Pageable pageable,
             @RequestParam(required = false) String title,

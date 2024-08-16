@@ -32,7 +32,7 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/paged")
+    @GetMapping("/paginate")
     public Page<CategoryResponse> getAllCategories(Pageable pageable) {
         Page<CategoryResponse> categories = categoryService.findAll(pageable);
         return categories;

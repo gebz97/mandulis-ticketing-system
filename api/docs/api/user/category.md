@@ -12,6 +12,14 @@
 - **Response:**
   - **Status:** `200 OK`
   - **Body:** List of `CategoryResponse` objects
+  - 
+### Get All Categories Paginated
+
+- **URL:** `/api/v1/user/category/paginate?page={page}&size={size}`
+- **Method:** `GET`
+- **Response:**
+  - **Status:** `200 OK`
+  - **Body:** Page of `CategoryResponse` object
 
 ### Get Category by ID
 

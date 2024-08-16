@@ -30,7 +30,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/paged")
+    @GetMapping("/paginate")
     public Page<UserResponse> getAllUsersPaged(Pageable pageable) {
         Page<UserResponse> users = userService.findAll(pageable);
         return users;
@@ -84,7 +84,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/filter/paged")
+    @GetMapping("/filter/paginate")
     public Page<UserResponse> searchUsersPaged(Pageable pageable,
                                                @RequestParam(required = false)
                                                String username,
