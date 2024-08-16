@@ -1,10 +1,13 @@
 package org.mandulis.mts.service;
 
 import org.mandulis.mts.dto.request.CategoryRequest;
+import org.mandulis.mts.dto.request.PageRequestParams;
 import org.mandulis.mts.dto.response.CategoryResponse;
 import org.mandulis.mts.entity.Category;
 import org.mandulis.mts.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,9 +23,12 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<CategoryResponse> findAll() {
-        List<Category> categories = categoryRepository.findAll();
-        return categories.stream().map(CategoryService::convertEntityToDto).toList();
+    public Page<CategoryResponse> findAll(PageRequestParams pageRequestParams) {
+        Pageable pageable = Pageable.ofSize(pageRequestParams.getSize())
+                .withPage(pageRequestParams.getPage());
+        Page<CategoryResponse> categories = categoryRepository.findAll(pageable)
+                .map(CategoryService::convertEntityToDto);
+        return categories;
     }
 
     public CategoryResponse save(CategoryRequest request) {

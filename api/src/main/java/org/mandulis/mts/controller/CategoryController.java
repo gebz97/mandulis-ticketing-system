@@ -1,9 +1,11 @@
 package org.mandulis.mts.controller;
 
 import org.mandulis.mts.dto.request.CategoryRequest;
+import org.mandulis.mts.dto.request.PageRequestParams;
 import org.mandulis.mts.dto.response.CategoryResponse;
 import org.mandulis.mts.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +27,9 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
-        List<CategoryResponse> categories = categoryService.findAll();
-        return ResponseEntity.ok(categories);
+    public Page<CategoryResponse> getAllCategories(@ModelAttribute PageRequestParams pageRequestParams) {
+        Page<CategoryResponse> categories = categoryService.findAll(pageRequestParams);
+        return categories;
     }
 
     @GetMapping(value = "/id={id}")
