@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mandulis.mts.specification.UserSpecification.*;
+import static org.mandulis.mts.entity.spec.UserSpecification.*;
 
 @Service
 @RequiredArgsConstructor

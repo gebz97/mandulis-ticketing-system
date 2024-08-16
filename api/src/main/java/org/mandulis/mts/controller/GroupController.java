@@ -24,42 +24,35 @@ public class GroupController {
         this.groupService = groupService;
     }
 
-    @GetMapping("/id={id}")
-    public ResponseEntity<?> findById(@PathVariable("id") Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<GroupResponse> findById(@PathVariable Long id) {
         Optional<GroupResponse> group = groupService.findById(id);
-        if (group.isEmpty()) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "Group not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-        return ResponseEntity.ok(group.get());
+        return group.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     @PostMapping
-    public ResponseEntity<?> createGroup(@Valid @RequestBody GroupRequest groupRequest) {
-        GroupResponse newGroup = groupService.save(groupRequest);
-        if (newGroup == null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "Invalid Input");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    public ResponseEntity<GroupResponse> createGroup(@Valid @RequestBody GroupRequest groupRequest) {
+        try {
+            GroupResponse newGroup = groupService.save(groupRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newGroup);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        return ResponseEntity.ok(newGroup);
     }
 
-    @PutMapping(value = "/id={id}")
-    public ResponseEntity<?> updateGroup(@PathVariable("id") Long id, @RequestBody GroupRequest request) {
+    @PutMapping("/{id}")
+    public ResponseEntity<GroupResponse> updateGroup(@PathVariable Long id, @RequestBody GroupRequest request) {
         try {
             GroupResponse group = groupService.update(id, request);
             return ResponseEntity.ok(group);
         } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "Category not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
-    @DeleteMapping(value = "/id={id}")
-    public ResponseEntity<?> deleteGroup(@PathVariable("id") Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deleteGroup(@PathVariable Long id) {
         try {
             groupService.deleteById(id);
             Map<String, String> response = new HashMap<>();
