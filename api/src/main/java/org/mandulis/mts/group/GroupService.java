@@ -40,15 +40,15 @@ public class GroupService {
         return convertEntityToDto(groupRepository.save(entity));
     }
 
-    public GroupResponse update(Long id,GroupRequest request) {
+    public Optional<GroupResponse> update(Long id,GroupRequest request) {
         Optional<Group> foundGroup = groupRepository.findById(id);
         if (foundGroup.isEmpty()) {
-            throw new EntityNotFoundException("Group with id:" + id + " not found");
+            return Optional.empty();
         }
         Group entity = foundGroup.get();
         entity.setName(request.getName());
         entity.setDescription(request.getDescription());
-        return convertEntityToDto(groupRepository.save(entity));
+        return Optional.of(convertEntityToDto(groupRepository.save(entity)));
     }
 
     public void delete(Long id) {

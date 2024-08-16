@@ -1,5 +1,7 @@
 package org.mandulis.mts.group;
 
+import org.mandulis.mts.rest.ApiResponse;
+import org.mandulis.mts.rest.ResponseHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,39 +22,51 @@ public class MembershipController {
     }
 
     @PostMapping
-    public ResponseEntity<MembershipResponse> addSingle(@RequestBody MembershipRequest request) {
-        Optional<MembershipResponse> membershipResponse = membershipService.addMembership(request);
-        return membershipResponse
-                .map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null));
+    public ResponseEntity<ApiResponse<MembershipResponse>> addSingle(@RequestBody MembershipRequest request) {
+        return membershipService.addMembership(request)
+                .map(response -> ResponseHandler.handleSuccess(
+                        response, HttpStatus.CREATED, "Membership created successfully"
+                ))
+                .orElseGet(() -> ResponseHandler.handleError(
+                        null, HttpStatus.BAD_REQUEST, "Invalid membership data", List.of("Invalid user or group")
+                ));
     }
 
     @PostMapping("/bulk")
-    public ResponseEntity<List<MembershipResponse>> addMultiple(@RequestBody List<MembershipRequest> requests) {
+    public ResponseEntity<ApiResponse<List<MembershipResponse>>> addMultiple(
+            @RequestBody List<MembershipRequest> requests
+    ) {
         List<MembershipResponse> membershipResponses = membershipService.addMultipleMemberships(requests);
         if (membershipResponses.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseHandler.handleError(
+                    null, HttpStatus.NOT_FOUND, "No memberships created", List.of("Invalid user or group")
+            );
         }
-        return ResponseEntity.ok(membershipResponses);
+        return ResponseHandler.handleSuccess(membershipResponses, HttpStatus.OK, "Memberships created successfully");
     }
 
     @DeleteMapping
-    public ResponseEntity<Map<String, String>> deleteMembership(@RequestBody MembershipRequest request) {
+    public ResponseEntity<ApiResponse<Void>> deleteMembership(@RequestBody MembershipRequest request) {
         boolean deleted = membershipService.deleteMembership(request);
-        if (!deleted) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "One or more invalid user or group");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        if (deleted) {
+            return ResponseHandler.handleSuccess(null, HttpStatus.NO_CONTENT, "Membership deleted successfully");
+        } else {
+            return ResponseHandler.handleError(
+                    null, HttpStatus.NOT_FOUND, "Invalid user or group", List.of("Invalid user or group")
+            );
         }
-        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/bulk")
-    public ResponseEntity<List<MembershipRequest>> deleteMultiple(@RequestBody List<MembershipRequest> requests) {
+    public ResponseEntity<ApiResponse<List<MembershipRequest>>> deleteMultiple(
+            @RequestBody List<MembershipRequest> requests
+    ) {
         List<MembershipRequest> deletedMemberships = membershipService.deleteMultipleMemberships(requests);
         if (deletedMemberships.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseHandler.handleError(
+                    null, HttpStatus.BAD_REQUEST, "Invalid user or group", List.of("Invalid user or group")
+            );
         }
-        return ResponseEntity.ok(deletedMemberships);
+        return ResponseHandler.handleSuccess(deletedMemberships, HttpStatus.OK, "Memberships deleted successfully");
     }
 }

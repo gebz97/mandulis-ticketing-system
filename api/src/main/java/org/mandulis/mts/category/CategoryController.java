@@ -1,5 +1,8 @@
 package org.mandulis.mts.category;
 
+import org.mandulis.mts.rest.ApiResponse;
+import org.mandulis.mts.rest.ResponseHandler;
+import org.mandulis.mts.rest.SuccessMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,57 +25,51 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
-        List<CategoryResponse> categories = categoryService.findAll();
-        return ResponseEntity.ok(categories);
+    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAllCategories() {
+        return ResponseHandler.handleSuccess(
+                categoryService.findAll(),
+                HttpStatus.OK,
+                SuccessMessages.QUERY_SUCCESSFUL
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id) {
-        Optional<CategoryResponse> category = categoryService.getResponseById(id);
-        return category.map(ResponseEntity::ok)
-                .orElseGet(() -> {
-                    //Map<String, String> response = new HashMap<>();
-                    //response.put("error", "Category not found");
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-                });
+    public ResponseEntity<ApiResponse<CategoryResponse>> getCategoryById(@PathVariable Long id) {
+        return categoryService.getResponseById(id)
+                .map(response -> ResponseHandler.handleSuccess(
+                        response, HttpStatus.OK, SuccessMessages.QUERY_SUCCESSFUL
+                ))
+                .orElseGet(() -> ResponseHandler.handleError(
+                        null, HttpStatus.NOT_FOUND, "Category not found", List.of("Category not found")
+                ));
     }
 
     @PostMapping
-    public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryRequest request) {
-        try {
-            CategoryResponse category = categoryService.save(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(category);
-        } catch (Exception e) {
-            //Map<String, String> response = new HashMap<>();
-            //response.put("error", "Error creating category");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+    public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(@RequestBody CategoryRequest request) {
+        return ResponseHandler.handleSuccess(
+                categoryService.save(request),
+                HttpStatus.CREATED,
+                "Category created successfully"
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id, @RequestBody CategoryRequest request) {
-        try {
-            CategoryResponse category = categoryService.update(id, request);
-            return ResponseEntity.ok(category);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "Category not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    public ResponseEntity<ApiResponse<CategoryResponse>> updateCategory(
+            @PathVariable Long id, @RequestBody CategoryRequest request
+    ) {
+        return categoryService.update(id, request)
+                .map(response -> ResponseHandler.handleSuccess(
+                        response, HttpStatus.OK, "Category updated successfully"
+                ))
+                .orElseGet(() -> ResponseHandler.handleError(
+                        null, HttpStatus.NOT_FOUND, "Category not found", List.of("Category not found")
+                ));
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> deleteCategory(@PathVariable Long id) {
-        try {
-            categoryService.deleteById(id);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Category deleted successfully");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "Category not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+    public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteById(id);
+        return ResponseHandler.handleSuccess(null, HttpStatus.NO_CONTENT, "Category deleted successfully");
     }
 }

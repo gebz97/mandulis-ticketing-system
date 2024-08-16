@@ -1,12 +1,18 @@
 package org.mandulis.mts.group;
 
 import jakarta.validation.Valid;
+import org.mandulis.mts.rest.ApiResponse;
+import org.mandulis.mts.rest.ErrorMessages;
+import org.mandulis.mts.rest.ResponseHandler;
+import org.mandulis.mts.rest.SuccessMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.integration.http.dsl.Http;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,46 +26,61 @@ public class GroupController {
     public GroupController(final GroupService groupService) {
         this.groupService = groupService;
     }
-    //TODO: Get for all groups
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<GroupResponse>>> getAllGroups() {
+        List<GroupResponse> groups = groupService.findAll();
+        if (groups.isEmpty()) {
+            return ResponseHandler.handleError(
+                    List.of(),
+                    HttpStatus.NOT_FOUND,
+                    ErrorMessages.NO_GROUPS_FOUND,
+                    List.of("No groups found")
+            );
+        }
+        return ResponseHandler.handleSuccess(
+                groups,
+                HttpStatus.OK,
+                SuccessMessages.QUERY_SUCCESSFUL
+        );
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GroupResponse> findById(@PathVariable Long id) {
-        Optional<GroupResponse> group = groupService.findById(id);
-        return group.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    public ResponseEntity<ApiResponse<GroupResponse>> findById(@PathVariable Long id) {
+        return groupService.findById(id)
+                .map(response -> ResponseHandler.handleSuccess(
+                        response, HttpStatus.OK, SuccessMessages.QUERY_SUCCESSFUL
+                ))
+                .orElseGet(() -> ResponseHandler.handleError(
+                        null, HttpStatus.NOT_FOUND, "Group not found", List.of("Group not found")
+                ));
     }
 
     @PostMapping
-    public ResponseEntity<GroupResponse> createGroup(@Valid @RequestBody GroupRequest groupRequest) {
-        try {
-            GroupResponse newGroup = groupService.save(groupRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newGroup);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+    public ResponseEntity<ApiResponse<GroupResponse>> createGroup(@Valid @RequestBody GroupRequest groupRequest) {
+        return ResponseHandler.handleSuccess(
+                groupService.save(groupRequest),
+                HttpStatus.CREATED,
+                "Group created successfully"
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GroupResponse> updateGroup(@PathVariable Long id, @RequestBody GroupRequest request) {
-        try {
-            GroupResponse group = groupService.update(id, request);
-            return ResponseEntity.ok(group);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    public ResponseEntity<ApiResponse<GroupResponse>> updateGroup(
+            @PathVariable Long id, @RequestBody GroupRequest request
+    ) {
+        return groupService.update(id, request)
+                .map(response -> ResponseHandler.handleSuccess(
+                        response, HttpStatus.OK, "Group updated successfully"
+                ))
+                .orElseGet(() -> ResponseHandler.handleError(
+                        null, HttpStatus.NOT_FOUND, "Group not found", List.of("Group not found")
+                ));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> deleteGroup(@PathVariable Long id) {
-        try {
-            groupService.deleteById(id);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Group deleted successfully");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "Group not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+    public ResponseEntity<ApiResponse<Void>> deleteGroup(@PathVariable Long id) {
+        groupService.deleteById(id);
+        return ResponseHandler.handleSuccess(null, HttpStatus.NO_CONTENT, "Group deleted successfully");
     }
 }

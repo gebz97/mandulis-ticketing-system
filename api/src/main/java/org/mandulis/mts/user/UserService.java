@@ -7,7 +7,6 @@ import org.mandulis.mts.rest.ErrorMessages;
 import org.mandulis.mts.enums.Role;
 import org.mandulis.mts.exception.UserAlreadyExistsException;
 import org.mandulis.mts.exception.UserNotFoundException;
-import org.mandulis.mts.exception.UserUpdateException;
 import org.mandulis.mts.exception.UserValidationException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +24,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
 
     public static UserResponse convertEntityToUserResponseDto(User user) {
         return UserResponse.builder()
@@ -48,90 +46,44 @@ public class UserService {
 
     @Transactional
     public Optional<UserResponse> findUserResponseById(Long id) {
-        Optional<User> foundUser = userRepository.findById(id);
-        if(foundUser.isEmpty()) {
-            throw new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
-        }
-        return foundUser.map(UserService::convertEntityToUserResponseDto);
+        return findUserById(id).map(UserService::convertEntityToUserResponseDto);
     }
 
     @Transactional
     public Optional<UserResponse> findUserResponseByUsername(String username) {
-        Optional<User> foundUser = userRepository.findByUsername(username);
-        if (foundUser.isEmpty()) {
-            throw new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
-        }
-        return foundUser.map(UserService::convertEntityToUserResponseDto);
+        return findUserByUsername(username).map(UserService::convertEntityToUserResponseDto);
     }
 
     @Transactional
     public List<UserResponse> findAllUsers() {
-        List<User> users = userRepository.findAll();
-        //List<UserResponse> userResponses = new ArrayList<>();
-//        for (User user : users) {
-//            userResponses.add(convertEntityToUserResponseDto(user));
-//        }
-        return users.stream().map(UserService::convertEntityToUserResponseDto).toList();
+        return userRepository.findAll()
+                .stream()
+                .map(UserService::convertEntityToUserResponseDto)
+                .toList();
     }
 
     public void deleteUserById(Long id) {
-        try {
-            userRepository.deleteById(id);
-        } catch (Exception e) {
+        if (!userRepository.existsById(id)) {
             throw new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
         }
+        userRepository.deleteById(id);
     }
 
-    public UserResponse saveUser(UserRequest request) {
-
-        if (userRepository.existsByEmail(request.getEmail()) ||
-                userRepository.existsByUsername(request.getUsername())) {
-            throw new UserAlreadyExistsException(ErrorMessages.USER_ALREADY_EXISTS);
+    public Optional<UserResponse> saveUser(UserRequest request) {
+        if (userRepository.existsByEmail(request.getEmail()) || userRepository.existsByUsername(request.getUsername()))
+        {
+            return Optional.empty();
         }
-
-        try {
-            User user = User.builder()
-                    .email(request.getEmail())
-                    .firstName(request.getFirstName())
-                    .lastName(request.getLastName())
-                    .username(request.getUsername())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(request.getRole())
-                    .build();
-
-            User savedUser = userRepository.save(user);
-            return convertEntityToUserResponseDto(savedUser);
-        } catch (Exception e) {
-            throw new UserValidationException(ErrorMessages.USER_UNIQUE_VALUES_VALIDATION);
-        }
+        User user = createUserFromRequest(request);
+        User savedUser = userRepository.save(user);
+        return Optional.of(convertEntityToUserResponseDto(savedUser));
     }
 
     @Transactional
-    public UserResponse updateUserById(Long id, UserRequest request){
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            User user = existingUser.get();
-            user.setFirstName(request.getFirstName());
-            user.setLastName(request.getLastName());
-            user.setRole(request.getRole());
-
-            if(!existingUser.get().getEmail().equals(request.getEmail())
-                    && userRepository.existsByEmail(request.getEmail())) {
-                throw new UserUpdateException(ErrorMessages.USER_UNIQUE_VALUES_VALIDATION);
-            }
-            user.setEmail(request.getEmail());
-
-            if(!existingUser.get().getUsername().equals(request.getUsername())
-                    && userRepository.existsByUsername(request.getUsername())) {
-                throw new UserUpdateException(ErrorMessages.USER_UNIQUE_VALUES_VALIDATION);
-            }
-            user.setUsername(request.getUsername());
-
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-            return convertEntityToUserResponseDto(userRepository.save(user));
-        } else {
-            throw new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
-        }
+    public Optional<UserResponse> updateUserById(Long id, UserRequest request) {
+        return findExistingUser(id)
+                .flatMap(user -> validateAndUpdateUser(user, request))
+                .map(user -> convertEntityToUserResponseDto(userRepository.save(user)));
     }
 
     @Transactional
@@ -141,11 +93,54 @@ public class UserService {
                 .or(hasLastNameLike(lastName))
                 .or(hasEmailLike(email));
         List<User> users = userRepository.findAll(filters);
+        return users.isEmpty() ? new ArrayList<>() : users.stream().map(UserService::convertEntityToUserResponseDto).toList();
+    }
 
-        if (users.isEmpty()) {
-            return new ArrayList<>();
+    private Optional<User> findUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    private Optional<User> findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    private Optional<User> findExistingUser(Long id) {
+        return findUserById(id);
+    }
+
+    private Optional<User> validateAndUpdateUser(User user, UserRequest request) {
+        if (isEmailChangedAndExists(user, request.getEmail()) || isUsernameChangedAndExists(user, request.getUsername())) {
+            return Optional.empty();
         }
+        updateUserFields(user, request);
+        return Optional.of(user);
+    }
 
-        return users.stream().map(UserService::convertEntityToUserResponseDto).toList();
+    private boolean isEmailChangedAndExists(User user, String newEmail) {
+        return !user.getEmail().equals(newEmail) && userRepository.existsByEmail(newEmail);
+    }
+
+    private boolean isUsernameChangedAndExists(User user, String newUsername) {
+        return !user.getUsername().equals(newUsername) && userRepository.existsByUsername(newUsername);
+    }
+
+    private void updateUserFields(User user, UserRequest request) {
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setRole(request.getRole());
+        user.setEmail(request.getEmail());
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+    }
+
+    private User createUserFromRequest(UserRequest request) {
+        return User.builder()
+                .email(request.getEmail())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
+                .build();
     }
 }

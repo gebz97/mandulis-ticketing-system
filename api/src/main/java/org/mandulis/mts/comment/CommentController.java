@@ -1,6 +1,9 @@
 package org.mandulis.mts.comment;
 
 import lombok.AllArgsConstructor;
+import org.mandulis.mts.rest.ApiResponse;
+import org.mandulis.mts.rest.ResponseHandler;
+import org.mandulis.mts.rest.SuccessMessages;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,65 +18,79 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/by-username")
-    public ResponseEntity<CommentResponse> createCommentByUsername(
+    public ResponseEntity<ApiResponse<CommentResponse>> createCommentByUsername(
             @RequestParam String username, @RequestBody CommentRequest commentRequest
     ) {
-        CommentResponse commentResponse = commentService.createCommentByUsername(username, commentRequest);
-        return new ResponseEntity<>(commentResponse, HttpStatus.CREATED);
+        return ResponseHandler.handleSuccess(
+                commentService.createCommentByUsername(username, commentRequest),
+                HttpStatus.CREATED,
+                "Comment created successfully"
+        );
     }
 
     @PostMapping("/by-userid")
-    public ResponseEntity<CommentResponse> createCommentByUserId(
+    public ResponseEntity<ApiResponse<CommentResponse>> createCommentByUserId(
             @RequestParam Long userId, @RequestBody CommentRequest commentRequest
     ) {
-        CommentResponse commentResponse = commentService.createCommentByUserId(userId, commentRequest);
-        return new ResponseEntity<>(commentResponse, HttpStatus.CREATED);
+        return ResponseHandler.handleSuccess(
+                commentService.createCommentByUserId(userId, commentRequest),
+                HttpStatus.CREATED,
+                "Comment created successfully"
+        );
     }
 
     @GetMapping("/by-user/{userId}")
-    public ResponseEntity<List<CommentResponse>> getAllCommentsByUser(@PathVariable Long userId) {
-        List<CommentResponse> comments = commentService.getAllCommentsByUser(userId);
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<List<CommentResponse>>> getAllCommentsByUser(@PathVariable Long userId) {
+        return ResponseHandler.handleSuccess(
+                commentService.getAllCommentsByUser(userId),
+                HttpStatus.OK,
+                SuccessMessages.QUERY_SUCCESSFUL
+        );
     }
 
     @GetMapping("/by-ticket/{ticketId}")
-    public ResponseEntity<List<CommentResponse>> getAllCommentsByTicket(@PathVariable Long ticketId) {
-        List<CommentResponse> comments = commentService.getAllCommentsByTicket(ticketId);
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<List<CommentResponse>>> getAllCommentsByTicket(@PathVariable Long ticketId) {
+        return ResponseHandler.handleSuccess(
+                commentService.getAllCommentsByTicket(ticketId),
+                HttpStatus.OK,
+                SuccessMessages.QUERY_SUCCESSFUL
+        );
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity<CommentResponse> updateComment(
+    public ResponseEntity<ApiResponse<CommentResponse>> updateComment(
             @PathVariable Long commentId, @RequestBody CommentRequest commentRequest
     ) {
-        CommentResponse commentResponse = commentService.updateComment(commentId, commentRequest);
-        return new ResponseEntity<>(commentResponse, HttpStatus.OK);
+        return ResponseHandler.handleSuccess(
+                commentService.updateComment(commentId, commentRequest),
+                HttpStatus.OK,
+                "Comment updated successfully"
+        );
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+    public ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseHandler.handleSuccess(null, HttpStatus.NO_CONTENT, "Comment deleted successfully");
     }
 
     @DeleteMapping("/by-user/{userId}")
-    public ResponseEntity<Void> deleteAllCommentsByUser(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<Void>> deleteAllCommentsByUser(@PathVariable Long userId) {
         commentService.deleteAllCommentsByUser(userId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseHandler.handleSuccess(null, HttpStatus.NO_CONTENT, "Comments deleted successfully");
     }
 
     @DeleteMapping("/by-user/{userId}/by-ticket/{ticketId}")
-    public ResponseEntity<Void> deleteAllCommentsByUserOnTicket(
+    public ResponseEntity<ApiResponse<Void>> deleteAllCommentsByUserOnTicket(
             @PathVariable Long userId, @PathVariable Long ticketId
     ) {
         commentService.deleteAllCommentsByUserOnTicket(userId, ticketId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseHandler.handleSuccess(null, HttpStatus.NO_CONTENT, "Comments deleted successfully");
     }
 
     @DeleteMapping("/by-ticket/{ticketId}")
-    public ResponseEntity<Void> deleteAllCommentsByTicket(@PathVariable Long ticketId) {
+    public ResponseEntity<ApiResponse<Void>> deleteAllCommentsByTicket(@PathVariable Long ticketId) {
         commentService.deleteAllCommentsByTicket(ticketId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseHandler.handleSuccess(null, HttpStatus.NO_CONTENT, "Comments deleted successfully");
     }
 }
-

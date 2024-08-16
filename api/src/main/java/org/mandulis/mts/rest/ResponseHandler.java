@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +39,26 @@ public class ResponseHandler {
         Map<String,Object> response = new HashMap<>();
         response.put("status",statusMessage);
         response.put("content",data);
+        return new ResponseEntity<>(response,httpStatus);
+    }
+
+    public static <T> ResponseEntity<ApiResponse<T>> handleSuccess(
+            T data, HttpStatus httpStatus, String statusMessage
+    ){
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setData(data);
+        response.setMessage(statusMessage);
+        response.setSuccess(true);
+        return new ResponseEntity<>(response,httpStatus);
+    }
+    public static <T> ResponseEntity<ApiResponse<T>> handleError(
+            T data, HttpStatus httpStatus, String statusMessage, List<String> errors
+    ){
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setData(data);
+        response.setMessage(statusMessage);
+        response.setSuccess(false);
+        response.setErrors(errors);
         return new ResponseEntity<>(response,httpStatus);
     }
 }
