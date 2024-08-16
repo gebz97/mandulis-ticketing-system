@@ -69,6 +69,7 @@ public class TicketService {
     }
 
     public List<TicketResponse> filterTickets(
+            PageRequestParams pageRequestParams,
             String title,
             String categoryName,
             Ticket.Priority priority,
@@ -105,7 +106,10 @@ public class TicketService {
             spec = spec.and(TicketSpecification.updatedBefore(updatedBefore));
         }
 
-        return ticketRepository.findAll(spec).stream()
+        Pageable pageable = Pageable.ofSize(pageRequestParams.getSize())
+                .withPage(pageRequestParams.getPage());
+
+        return ticketRepository.findAll(spec, pageable).stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }

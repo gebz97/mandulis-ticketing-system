@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -27,12 +28,14 @@ public class CategoryController {
     }
 
     @GetMapping
+    @Transactional(readOnly = true)
     public Page<CategoryResponse> getAllCategories(@ModelAttribute PageRequestParams pageRequestParams) {
         Page<CategoryResponse> categories = categoryService.findAll(pageRequestParams);
         return categories;
     }
 
     @GetMapping(value = "/id={id}")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getCategoryById(@PathVariable("id") Long id) {
         Optional<CategoryResponse> category = categoryService.getResponseById(id);
         if (category.isPresent()) {

@@ -7,6 +7,7 @@ import org.mandulis.mts.dto.request.TicketRequest;
 import org.mandulis.mts.dto.response.TicketResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -25,11 +26,13 @@ public class TicketController {
     }
 
     @GetMapping
+    @Transactional(readOnly = true)
     public Page<TicketResponse> findAll(@ModelAttribute PageRequestParams pageRequestParams) {
         return ticketService.findAll(pageRequestParams);
     }
 
     @GetMapping("/{id}")
+    @Transactional(readOnly = true)
     public Optional<TicketResponse> findById(@PathVariable Long id) {
         return ticketService.findById(id);
     }
@@ -50,7 +53,9 @@ public class TicketController {
     }
 
     @GetMapping("/filter")
+    @Transactional(readOnly = true)
     public List<TicketResponse> filterTickets(
+            @ModelAttribute PageRequestParams pageRequestParams,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String categoryName,
             @RequestParam(required = false) Ticket.Priority priority,
@@ -59,7 +64,7 @@ public class TicketController {
             @RequestParam(required = false) LocalDateTime createdBefore,
             @RequestParam(required = false) LocalDateTime updatedAfter,
             @RequestParam(required = false) LocalDateTime updatedBefore) {
-        return ticketService.filterTickets(
+        return ticketService.filterTickets( pageRequestParams,
                 title, categoryName, priority, userName, createdAfter, createdBefore, updatedAfter, updatedBefore
         );
     }
