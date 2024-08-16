@@ -1,7 +1,6 @@
 package org.mandulis.mts.repository;
 
 import org.mandulis.mts.entity.User;
-import org.mandulis.mts.specification.UserSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

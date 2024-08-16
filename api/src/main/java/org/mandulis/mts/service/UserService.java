@@ -1,6 +1,5 @@
 package org.mandulis.mts.service;
 
-import org.mandulis.mts.dto.request.PageRequestParams;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mandulis.mts.entity.spec.UserSpecification.*;
@@ -69,8 +69,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserResponse> findAllUsers(PageRequestParams pageRequestParams) {
-        Pageable pageable = Pageable.ofSize(pageRequestParams.getSize()).withPage(pageRequestParams.getPage());
+    public List<UserResponse> findAll() {
+        List<UserResponse> users = userRepository.findAll().stream().map(UserService::convertEntityToUserResponseDto).toList();
+        return users;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserResponse> findAll(Pageable pageable) {
         Page<UserResponse> users = userRepository.findAll(pageable).map(UserService::convertEntityToUserResponseDto);
         return users;
     }
@@ -136,11 +141,22 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserResponse> searchUsers(PageRequestParams pageRequestParams, String username, String firstName, String lastName, String email) {
+    public List<UserResponse> filter(String username, String firstName, String lastName, String email) {
+        Specification<User> filters = Specification.where(hasUsernameLike(username))
+                .or(hasFirstNameLike(firstName))
+                .or(hasLastNameLike(lastName))
+                .or(hasEmailLike(email));
 
-        Pageable pageable = Pageable.ofSize(pageRequestParams.getSize())
-                .withPage(pageRequestParams.getPage());
+        List<UserResponse> users = userRepository
+                .findAll(filters)
+                .stream()
+                .map(UserService::convertEntityToUserResponseDto).toList();
 
+        return users;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserResponse> filter(Pageable pageable, String username, String firstName, String lastName, String email) {
         Specification<User> filters = Specification.where(hasUsernameLike(username))
                 .or(hasFirstNameLike(firstName))
                 .or(hasLastNameLike(lastName))
