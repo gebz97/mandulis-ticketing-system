@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/user/tickets")
+@RequestMapping("/api/v1/public/tickets")
 public class TicketController {
 
     private final TicketService ticketService;

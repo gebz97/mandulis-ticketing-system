@@ -54,14 +54,14 @@ public class TicketService {
         return convertToResponseDTO(ticketRepository.save(ticket));
     }
 
-    @PreAuthorize("@securityService.isTicketOwner(#id, authentication.principal) or" +
-            " @securityService.isAdmin(authentication.principal)")
+    //@PreAuthorize("@securityService.isTicketOwner(#id, authentication.principal) or" +
+    //        " @securityService.isAdmin(authentication.principal)")
     public void deleteById(Long id) {
         ticketRepository.deleteById(id);
     }
 
-    @PreAuthorize("@securityService.isAssignedToTicket(#id, authentication.principal) or" +
-            " @securityService.isAdmin(authentication.principal)")
+    //@PreAuthorize("@securityService.isAssignedToTicket(#id, authentication.principal) or" +
+    //        " @securityService.isAdmin(authentication.principal)")
     public TicketResponse update(TicketRequest ticketRequest, Long id) {
         Ticket ticket = convertToEntity(ticketRequest);
         ticket.setId(id);
@@ -139,10 +139,12 @@ public class TicketService {
                     .map(Comment::getContent)
                     .collect(Collectors.toList()));
         }
-        ticketResponse.setAttachments(ticket.getAttachments()
-                .stream()
-                .map(Attachment::getFileName)
-                .collect(Collectors.toList()));
+        if (ticket.getAttachments() != null) {
+            ticketResponse.setAttachments(ticket.getAttachments()
+                    .stream()
+                    .map(Attachment::getFileName)
+                    .collect(Collectors.toList()));
+        }
         ticketResponse.setCreatedDate(ticket.getCreatedAt());
         ticketResponse.setUpdatedDate(ticket.getUpdatedAt());
         return ticketResponse;
