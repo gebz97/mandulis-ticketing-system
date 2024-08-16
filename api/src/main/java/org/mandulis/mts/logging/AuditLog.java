@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "audit_logs")
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

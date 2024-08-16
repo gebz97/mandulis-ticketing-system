@@ -12,7 +12,7 @@ import org.mandulis.mts.user.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

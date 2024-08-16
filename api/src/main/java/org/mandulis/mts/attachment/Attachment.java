@@ -6,7 +6,7 @@ import org.mandulis.mts.ticket.Ticket;
 
 @Entity
 @Table(name = "attachments")
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

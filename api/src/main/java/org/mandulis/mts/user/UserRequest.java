@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.mandulis.mts.enums.Role;
 
-@Data
 @Getter
 @Setter
 @AllArgsConstructor

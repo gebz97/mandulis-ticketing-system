@@ -6,7 +6,7 @@ import org.mandulis.mts.user.User;
 
 @Entity
 @Table(name = "ticket_assignments")
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

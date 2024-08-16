@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.mandulis.mts.rest.ErrorMessages;
 
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
