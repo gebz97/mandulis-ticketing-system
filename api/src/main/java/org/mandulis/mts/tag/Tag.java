@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "tags")
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

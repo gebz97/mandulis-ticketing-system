@@ -2,7 +2,7 @@ package org.mandulis.mts.group;
 
 import lombok.*;
 
-@Data
+
 @Getter
 @Setter
 @AllArgsConstructor
