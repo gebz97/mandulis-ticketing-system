@@ -1,6 +1,7 @@
 package org.mandulis.mts.controller;
 
 import jakarta.validation.Valid;
+import org.mandulis.mts.dto.request.PageRequestParams;
 import org.mandulis.mts.dto.request.UserRequest;
 import org.mandulis.mts.service.UserService;
 import org.mandulis.mts.dto.response.UserResponse;
@@ -22,8 +23,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllUsers() {
-        return ResponseEntity.ok(userService.findAllUsers());
+    public ResponseEntity<?> getAllUsers(@ModelAttribute PageRequestParams pageRequestParams) {
+        return ResponseEntity.ok(userService.findAllUsers(pageRequestParams));
     }
 
     @PostMapping
@@ -67,11 +68,13 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchUsers(@RequestParam(required = false) String username,
-                                        @RequestParam(required = false) String firstName,
-                                        @RequestParam(required = false) String lastName,
-                                        @RequestParam(required = false) String email) {
+    public ResponseEntity<?> searchUsers(
+            @ModelAttribute PageRequestParams pageRequestParams,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String email) {
 
-        return ResponseEntity.ok(userService.searchUsers(username, firstName, lastName, email));
+        return ResponseEntity.ok(userService.searchUsers(pageRequestParams, username, firstName, lastName, email));
     }
 }

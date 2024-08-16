@@ -1,6 +1,9 @@
 package org.mandulis.mts.service;
 
-import jakarta.transaction.Transactional;
+import org.mandulis.mts.dto.request.PageRequestParams;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.mandulis.mts.dto.request.UserRequest;
 import org.mandulis.mts.dto.response.ErrorMessages;
@@ -17,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mandulis.mts.specification.UserSpecification.*;
@@ -28,7 +30,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
 
     public static UserResponse convertEntityToUserResponseDto(User user) {
         return UserResponse.builder()
@@ -49,16 +50,16 @@ public class UserService {
                 .build();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<UserResponse> findUserResponseById(Long id) {
         Optional<User> foundUser = userRepository.findById(id);
-        if(foundUser.isEmpty()) {
+        if (foundUser.isEmpty()) {
             throw new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
         }
         return foundUser.map(UserService::convertEntityToUserResponseDto);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<UserResponse> findUserResponseByUsername(String username) {
         Optional<User> foundUser = userRepository.findByUsername(username);
         if (foundUser.isEmpty()) {
@@ -67,14 +68,11 @@ public class UserService {
         return foundUser.map(UserService::convertEntityToUserResponseDto);
     }
 
-    @Transactional
-    public List<UserResponse> findAllUsers() {
-        List<User> users = userRepository.findAll();
-        //List<UserResponse> userResponses = new ArrayList<>();
-//        for (User user : users) {
-//            userResponses.add(convertEntityToUserResponseDto(user));
-//        }
-        return users.stream().map(UserService::convertEntityToUserResponseDto).toList();
+    @Transactional(readOnly = true)
+    public Page<UserResponse> findAllUsers(PageRequestParams pageRequestParams) {
+        Pageable pageable = Pageable.ofSize(pageRequestParams.getSize()).withPage(pageRequestParams.getPage());
+        Page<UserResponse> users = userRepository.findAll(pageable).map(UserService::convertEntityToUserResponseDto);
+        return users;
     }
 
     public void deleteUserById(Long id) {
@@ -110,7 +108,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateUserById(Long id, UserRequest request){
+    public UserResponse updateUserById(Long id, UserRequest request) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
             User user = existingUser.get();
@@ -118,13 +116,13 @@ public class UserService {
             user.setLastName(request.getLastName());
             user.setRole(request.getRole());
 
-            if(!existingUser.get().getEmail().equals(request.getEmail())
+            if (!existingUser.get().getEmail().equals(request.getEmail())
                     && userRepository.existsByEmail(request.getEmail())) {
                 throw new UserUpdateException(ErrorMessages.USER_UNIQUE_VALUES_VALIDATION);
             }
             user.setEmail(request.getEmail());
 
-            if(!existingUser.get().getUsername().equals(request.getUsername())
+            if (!existingUser.get().getUsername().equals(request.getUsername())
                     && userRepository.existsByUsername(request.getUsername())) {
                 throw new UserUpdateException(ErrorMessages.USER_UNIQUE_VALUES_VALIDATION);
             }
@@ -137,18 +135,21 @@ public class UserService {
         }
     }
 
-    @Transactional
-    public List<UserResponse> searchUsers(String username, String firstName, String lastName, String email) {
+    @Transactional(readOnly = true)
+    public Page<UserResponse> searchUsers(PageRequestParams pageRequestParams, String username, String firstName, String lastName, String email) {
+
+        Pageable pageable = Pageable.ofSize(pageRequestParams.getSize())
+                .withPage(pageRequestParams.getPage());
+
         Specification<User> filters = Specification.where(hasUsernameLike(username))
                 .or(hasFirstNameLike(firstName))
                 .or(hasLastNameLike(lastName))
                 .or(hasEmailLike(email));
-        List<User> users = userRepository.findAll(filters);
 
-        if (users.isEmpty()) {
-            return new ArrayList<>();
-        }
+        Page<UserResponse> users = userRepository
+                .findAll(filters, pageable)
+                .map(UserService::convertEntityToUserResponseDto);
 
-        return users.stream().map(UserService::convertEntityToUserResponseDto).toList();
+        return users;
     }
 }
