@@ -1,5 +1,6 @@
 package org.mandulis.mts.service;
 
+import org.mandulis.mts.dto.request.PageRequestParams;
 import org.mandulis.mts.entity.Attachment;
 import org.mandulis.mts.entity.Comment;
 import org.mandulis.mts.repository.CategoryRepository;
@@ -10,6 +11,8 @@ import org.mandulis.mts.dto.request.TicketRequest;
 import org.mandulis.mts.dto.response.TicketResponse;
 import org.mandulis.mts.entity.spec.TicketSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -33,10 +36,12 @@ public class TicketService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<TicketResponse> findAll() {
-        return ticketRepository.findAll().stream()
-                .map(this::convertToResponseDTO)
-                .collect(Collectors.toList());
+    public Page<TicketResponse> findAll(PageRequestParams pageRequestParams) {
+        Pageable pageable = Pageable.ofSize(pageRequestParams.getSize())
+                .withPage(pageRequestParams.getPage());
+
+        Page<TicketResponse> tickets =  ticketRepository.findAll(pageable).map(this::convertToResponseDTO);
+        return tickets;
     }
 
     public Optional<TicketResponse> findById(Long id) {

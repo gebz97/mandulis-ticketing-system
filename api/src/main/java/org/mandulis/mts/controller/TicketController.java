@@ -1,10 +1,12 @@
 package org.mandulis.mts.controller;
 
+import org.mandulis.mts.dto.request.PageRequestParams;
 import org.mandulis.mts.entity.Ticket;
 import org.mandulis.mts.service.TicketService;
 import org.mandulis.mts.dto.request.TicketRequest;
 import org.mandulis.mts.dto.response.TicketResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,8 +25,8 @@ public class TicketController {
     }
 
     @GetMapping
-    public List<TicketResponse> findAll() {
-        return ticketService.findAll();
+    public Page<TicketResponse> findAll(@ModelAttribute PageRequestParams pageRequestParams) {
+        return ticketService.findAll(pageRequestParams);
     }
 
     @GetMapping("/{id}")
