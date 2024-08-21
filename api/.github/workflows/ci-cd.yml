@@ -1,4 +1,4 @@
-name: Spring Boot CI
+name: Mandulid giCI
 
 on:
   pull_request:
