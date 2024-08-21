@@ -1,4 +1,4 @@
-package org.mandulis.mts.service.storage;
+package org.mandulis.mts.storage;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;

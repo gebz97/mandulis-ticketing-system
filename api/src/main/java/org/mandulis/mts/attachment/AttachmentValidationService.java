@@ -1,4 +1,4 @@
-package org.mandulis.mts.service;
+package org.mandulis.mts.attachment;
 
 import org.mandulis.mts.dto.AttachmentDto;
 import org.mandulis.mts.exception.AttachmentWithoutNameException;

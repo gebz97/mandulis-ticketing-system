@@ -2,16 +2,14 @@ package org.mandulis.mts.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.mandulis.mts.rest.ErrorMessages;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
 public class LoginRequest {
     @NotBlank(message = "Username is mandatory")
     @Size(min = 3, max = 20, message = ErrorMessages.LOGIN_USERNAME_VALIDATION)

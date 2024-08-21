@@ -1,12 +1,13 @@
 package org.mandulis.mts.utils;
 
 import lombok.RequiredArgsConstructor;
-import org.mandulis.mts.entity.Category;
-import org.mandulis.mts.entity.Ticket;
-import org.mandulis.mts.entity.User;
-import org.mandulis.mts.repository.CategoryRepository;
-import org.mandulis.mts.repository.TicketRepository;
-import org.mandulis.mts.repository.UserRepository;
+
+import org.mandulis.mts.category.Category;
+import org.mandulis.mts.category.CategoryRepository;
+import org.mandulis.mts.ticket.Ticket;
+import org.mandulis.mts.ticket.TicketRepository;
+import org.mandulis.mts.user.User;
+import org.mandulis.mts.user.UserRepository;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,4 +1,4 @@
-package org.mandulis.mts.service.storage;
+package org.mandulis.mts.storage;
 
 import org.mandulis.mts.dto.AttachmentDto;
 

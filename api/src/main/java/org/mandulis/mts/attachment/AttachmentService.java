@@ -2,13 +2,13 @@ package org.mandulis.mts.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mandulis.mts.attachment.Attachment;
+import org.mandulis.mts.attachment.AttachmentRepository;
 import org.mandulis.mts.dto.AttachmentDto;
-import org.mandulis.mts.entity.Attachment;
-import org.mandulis.mts.entity.Ticket;
 import org.mandulis.mts.exception.TicketNotFoundException;
-import org.mandulis.mts.repository.AttachmentRepository;
-import org.mandulis.mts.repository.TicketRepository;
-import org.mandulis.mts.service.storage.StorageService;
+import org.mandulis.mts.storage.StorageService;
+import org.mandulis.mts.ticket.Ticket;
+import org.mandulis.mts.ticket.TicketRepository;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;

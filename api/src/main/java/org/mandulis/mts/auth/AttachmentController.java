@@ -3,7 +3,7 @@ package org.mandulis.mts.controller;
 import org.mandulis.mts.dto.AttachmentDto;
 import org.mandulis.mts.exception.EmptyAttachmentException;
 import org.mandulis.mts.service.AttachmentService;
-import org.mandulis.mts.service.AttachmentValidationService;
+import org.mandulis.mts.attachment.AttachmentValidationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
