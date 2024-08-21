@@ -1,4 +1,4 @@
-name: Mandulid giCI
+name: Mandulis CI
 
 on:
   pull_request:
