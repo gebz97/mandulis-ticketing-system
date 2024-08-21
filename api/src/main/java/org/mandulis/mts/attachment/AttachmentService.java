@@ -8,12 +8,12 @@ import org.mandulis.mts.entity.Ticket;
 import org.mandulis.mts.exception.TicketNotFoundException;
 import org.mandulis.mts.repository.AttachmentRepository;
 import org.mandulis.mts.repository.TicketRepository;
+import org.mandulis.mts.service.storage.StorageService;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
@@ -32,12 +32,12 @@ public class AttachmentService {
         return attachmentRepository.findById(id);
     }
 
-    public Attachment save(AttachmentDto dto) {
-        Ticket ticket = ticketRepository.findById(dto.ticketId).orElseThrow(
-                () -> new TicketNotFoundException(String.format("Ticket[id=%d] not found.", dto.ticketId))
+    public Attachment save(AttachmentDto attachmentDto) {
+        Ticket ticket = ticketRepository.findById(attachmentDto.ticketId).orElseThrow(
+                () -> new TicketNotFoundException(String.format("Ticket[id=%d] not found.", attachmentDto.ticketId))
         );
-        Path storedFilePath = storageService.store(dto.fileName, dto.inputStream);
-        Attachment attachment = createAttachmentEntity(dto, ticket, storedFilePath);
+        Path storedFilePath = storageService.store(attachmentDto);
+        Attachment attachment = createAttachmentEntity(attachmentDto, ticket, storedFilePath);
         attachmentRepository.save(attachment);
         log.info("Saved new attachment[id={}].", attachment.getId());
         return attachment;

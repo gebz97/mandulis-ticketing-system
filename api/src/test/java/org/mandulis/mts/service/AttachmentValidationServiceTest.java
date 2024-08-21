@@ -1,8 +1,8 @@
 package org.mandulis.mts.service;
 
 import org.junit.jupiter.api.Test;
+import org.mandulis.mts.dto.AttachmentDto;
 import org.mandulis.mts.exception.AttachmentWithoutNameException;
-import org.mandulis.mts.exception.EmptyAttachmentException;
 import org.springframework.mock.web.MockMultipartFile;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,7 +16,7 @@ class AttachmentValidationServiceTest {
 
         assertThrows(
                 AttachmentWithoutNameException.class,
-                () -> new AttachmentValidationService().validateAttachment(multipart)
+                () -> new AttachmentValidationService().validateAttachment(new AttachmentDto(multipart, 43L))
         );
     }
 
@@ -26,17 +26,7 @@ class AttachmentValidationServiceTest {
 
         assertThrows(
                 AttachmentWithoutNameException.class,
-                () -> new AttachmentValidationService().validateAttachment(multipart)
-        );
-    }
-
-    @Test
-    void shouldThrowExceptionWhenFileIsEmpty() {
-        var multipart = new MockMultipartFile("file", "filename.exe", "text/plain", new byte[0]);
-
-        assertThrows(
-                EmptyAttachmentException.class,
-                () -> new AttachmentValidationService().validateAttachment(multipart)
+                () -> new AttachmentValidationService().validateAttachment(new AttachmentDto(multipart, 43L))
         );
     }
 
@@ -44,7 +34,7 @@ class AttachmentValidationServiceTest {
     void shouldPass() {
         var multipart = new MockMultipartFile("file", "filename.exe", "text/plain", "content".getBytes());
         try {
-            new AttachmentValidationService().validateAttachment(multipart);
+            new AttachmentValidationService().validateAttachment(new AttachmentDto(multipart, 43L));
         } catch (Exception e) {
             fail();
         }

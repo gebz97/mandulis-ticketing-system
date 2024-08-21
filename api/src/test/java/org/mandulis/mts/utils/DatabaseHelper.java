@@ -1,4 +1,4 @@
-package org.mandulis.mts.controller;
+package org.mandulis.mts.utils;
 
 import lombok.RequiredArgsConstructor;
 import org.mandulis.mts.entity.Category;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-class DatabaseHelper {
+public class DatabaseHelper {
 
     private final TicketRepository ticketRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
-    Ticket setupTicket(User user, Category category) {
+    public Ticket setupTicket(User user, Category category) {
         var ticket = new Ticket();
         ticket.setTitle("");
         ticket.setDescription("");
@@ -28,7 +28,7 @@ class DatabaseHelper {
         return ticket;
     }
 
-    User setupUser() {
+    public User setupUser() {
         var user = new User();
         user.setUsername("");
         user.setPassword("");
@@ -37,22 +37,22 @@ class DatabaseHelper {
         return user;
     }
 
-    Category setupCategory() {
+    public Category setupCategory() {
         var category = new Category();
         category.setName("");
         categoryRepository.save(category);
         return category;
     }
 
-    void clearCategories() {
+    public void clearCategories() {
         categoryRepository.deleteAll();
     }
 
-    void clearTickets() {
+    public void clearTickets() {
         ticketRepository.deleteAll();
     }
 
-    void clearUsers() {
+    public void clearUsers() {
         userRepository.deleteAll();
     }
 

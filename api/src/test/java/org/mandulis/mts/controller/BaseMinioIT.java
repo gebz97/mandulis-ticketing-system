@@ -22,6 +22,7 @@ public class BaseMinioIT {
                 .endpoint(MINIO_CONTAINER.getS3URL())
                 .credentials(MINIO_CONTAINER.getUserName(), MINIO_CONTAINER.getPassword())
                 .build();
+        registry.add("jwt.secret", () -> "secret");
         registry.add("minio.endpoint", MINIO_CONTAINER::getS3URL);
         registry.add("minio.username", MINIO_CONTAINER::getUserName);
         registry.add("minio.password", MINIO_CONTAINER::getPassword);
