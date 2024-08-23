@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler({UserAlreadyExistsException.class, UserUpdateException.class})
+    @ExceptionHandler({UserAlreadyExistsException.class, UserUpdateException.class, EmptyAttachmentException.class, AttachmentWithoutNameException.class, ProcessingMultipartFileException.class})
     public ResponseEntity<Object> badRequestHandler(RuntimeException ex, WebRequest req){
         List<ErrorDetails> errors = new ArrayList<>();
         errors.add(new ErrorDetails(ex.getMessage(), req.getDescription(false), LocalDateTime.now()));
