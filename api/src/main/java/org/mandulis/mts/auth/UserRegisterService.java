@@ -6,7 +6,7 @@ import org.mandulis.mts.user.RegistrationRequest;
 import org.mandulis.mts.rest.ErrorMessages;
 import org.mandulis.mts.user.UserResponse;
 import org.mandulis.mts.user.User;
-import org.mandulis.mts.enums.Role;
+import org.mandulis.mts.user.Role;
 import org.mandulis.mts.exception.UserAlreadyExistsException;
 import org.mandulis.mts.user.UserRepository;
 import org.mandulis.mts.user.UserService;

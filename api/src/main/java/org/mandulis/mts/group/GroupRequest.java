@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 public class GroupRequest {
     @NotBlank(message = "Group name cannot be blank")
     @NotNull

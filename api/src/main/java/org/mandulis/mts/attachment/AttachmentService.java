@@ -1,18 +1,16 @@
-package org.mandulis.mts.service;
+package org.mandulis.mts.attachment;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mandulis.mts.attachment.Attachment;
-import org.mandulis.mts.attachment.AttachmentRepository;
-import org.mandulis.mts.dto.AttachmentDto;
 import org.mandulis.mts.exception.TicketNotFoundException;
-import org.mandulis.mts.storage.StorageService;
 import org.mandulis.mts.ticket.Ticket;
 import org.mandulis.mts.ticket.TicketRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.Optional;
 
 @Slf4j
@@ -24,38 +22,37 @@ public class AttachmentService {
     private final StorageService storageService;
     private final TicketRepository ticketRepository;
 
-    public List<Attachment> findAll() {
-        return attachmentRepository.findAll();
-    }
+    public AttachmentResponse saveAttachment(AttachmentRequest request) {
+        Optional<Ticket> ticketOptional = ticketRepository.findById(request.getTicketId());
+        if (ticketOptional.isEmpty()) {
+            throw new TicketNotFoundException("Ticket not found");
+        }
 
-    public Optional<Attachment> findById(Long id) {
-        return attachmentRepository.findById(id);
-    }
+        Ticket ticket = ticketOptional.get();
+        AttachmentFile attachmentFile = AttachmentFile.builder()
+                .fileName(request.getName())
+                .ticketId(request.getTicketId())
+                .inputStream(toInputStream(request.getFile()))
+                .contentType(request.getFile().getContentType())
+                .build();
 
-    public Attachment save(AttachmentDto attachmentDto) {
-        Ticket ticket = ticketRepository.findById(attachmentDto.ticketId).orElseThrow(
-                () -> new TicketNotFoundException(String.format("Ticket[id=%d] not found.", attachmentDto.ticketId))
-        );
-        Path storedFilePath = storageService.store(attachmentDto);
-        Attachment attachment = createAttachmentEntity(attachmentDto, ticket, storedFilePath);
-        attachmentRepository.save(attachment);
-        log.info("Saved new attachment[id={}].", attachment.getId());
-        return attachment;
-    }
+        URI uri = storageService.store(attachmentFile);
 
-    public void deleteById(Long id) {
-        attachmentRepository.deleteById(id);
-    }
-
-    public Attachment update(Attachment attachment) {
-        return attachmentRepository.save(attachment);
-    }
-
-    private Attachment createAttachmentEntity(AttachmentDto dto, Ticket ticket, Path storedFilePath) {
         Attachment attachment = new Attachment();
-        attachment.setFileName(dto.fileName);
-        attachment.setFilePath(storedFilePath.toString());
+        attachment.setFileName(request.getName());
+        attachment.setUri(uri.toString());
         attachment.setTicket(ticket);
-        return attachment;
+
+        attachmentRepository.save(attachment);
+
+        return AttachmentMapper.toResponse(attachment);
+    }
+
+    private InputStream toInputStream(MultipartFile multipartFile) {
+        try {
+            return multipartFile.getInputStream();
+        } catch (IOException e) {
+            throw new RuntimeException("Error converting file", e);
+        }
     }
 }

@@ -5,7 +5,7 @@ import lombok.*;
 import org.mandulis.mts.comment.Comment;
 import org.mandulis.mts.group.Group;
 import org.mandulis.mts.ticket.Ticket;
-import org.mandulis.mts.enums.Role;
+
 import java.util.Date;
 import java.util.List;
 

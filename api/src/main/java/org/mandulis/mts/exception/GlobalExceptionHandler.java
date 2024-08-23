@@ -21,14 +21,7 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final View error;
-
-    public GlobalExceptionHandler(View error) {
-        this.error = error;
-    }
-
-
-    @ExceptionHandler({UserAlreadyExistsException.class, UserUpdateException.class, EmptyAttachmentException.class, AttachmentWithoutNameException.class, ProcessingMultipartFileException.class})
+    @ExceptionHandler({UserAlreadyExistsException.class, UserUpdateException.class})
     public ResponseEntity<Object> badRequestHandler(RuntimeException ex, WebRequest req){
         List<ErrorDetails> errors = new ArrayList<>();
         errors.add(new ErrorDetails(ex.getMessage(), req.getDescription(false), LocalDateTime.now()));

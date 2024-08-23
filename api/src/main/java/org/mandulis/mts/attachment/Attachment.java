@@ -20,10 +20,9 @@ public class Attachment {
     private String fileName;
 
     @Column(nullable = false)
-    private String filePath;
+    private String uri;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 }
-
