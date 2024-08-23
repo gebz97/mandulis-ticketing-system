@@ -8,9 +8,6 @@ import org.mandulis.mts.ticket.TicketRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.Optional;
 
 @Slf4j
@@ -22,37 +19,22 @@ public class AttachmentService {
     private final StorageService storageService;
     private final TicketRepository ticketRepository;
 
-    public AttachmentResponse saveAttachment(AttachmentRequest request) {
+    public AttachmentResponse saveAttachment(AttachmentRequest request, MultipartFile file) {
         Optional<Ticket> ticketOptional = ticketRepository.findById(request.getTicketId());
         if (ticketOptional.isEmpty()) {
             throw new TicketNotFoundException("Ticket not found");
         }
 
         Ticket ticket = ticketOptional.get();
-        AttachmentFile attachmentFile = AttachmentFile.builder()
-                .fileName(request.getName())
-                .ticketId(request.getTicketId())
-                .inputStream(toInputStream(request.getFile()))
-                .contentType(request.getFile().getContentType())
-                .build();
-
-        URI uri = storageService.store(attachmentFile);
+        String preSignedUri = storageService.store(file);
 
         Attachment attachment = new Attachment();
         attachment.setFileName(request.getName());
-        attachment.setUri(uri.toString());
+        attachment.setDescription(request.getDescription());
         attachment.setTicket(ticket);
 
         attachmentRepository.save(attachment);
 
-        return AttachmentMapper.toResponse(attachment);
-    }
-
-    private InputStream toInputStream(MultipartFile multipartFile) {
-        try {
-            return multipartFile.getInputStream();
-        } catch (IOException e) {
-            throw new RuntimeException("Error converting file", e);
-        }
+        return AttachmentMapper.toResponse(attachment, preSignedUri);
     }
 }

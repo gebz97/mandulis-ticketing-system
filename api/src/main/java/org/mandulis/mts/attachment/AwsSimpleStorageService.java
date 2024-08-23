@@ -1,20 +1,22 @@
 package org.mandulis.mts.attachment;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.net.URI;
 
 public class AwsSimpleStorageService implements StorageService {
     @Override
-    public URI store(AttachmentFile attachmentFile) {
+    public String store(MultipartFile file) {
         return null;
     }
 
     @Override
-    public AttachmentFile retrieve(URI uri) {
+    public String retrieve(String objectName) {
         return null;
     }
 
     @Override
-    public boolean delete(URI uri) {
+    public boolean delete(String objectName) {
         return false;
     }
 }

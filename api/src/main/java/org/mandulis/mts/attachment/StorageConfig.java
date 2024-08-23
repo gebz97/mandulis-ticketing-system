@@ -25,7 +25,7 @@ public class StorageConfig {
     @Value("${minio.secret-key}")
     private String minioSecretKey;
 
-    @Bean
+    @Bean(name = "storageService")
     public StorageService storageService() {
         return switch (type) {
             case "minio" -> new MinioStorageService(
@@ -36,7 +36,7 @@ public class StorageConfig {
                     minioSecretKey
             );
             case "s3" -> new AwsSimpleStorageService();
-            default -> throw new IllegalArgumentException("Invalid storage type");
+            default -> null;
         };
     }
 }

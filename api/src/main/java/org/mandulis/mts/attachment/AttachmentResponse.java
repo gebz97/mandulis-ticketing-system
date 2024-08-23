@@ -10,6 +10,6 @@ import lombok.*;
 public class AttachmentResponse {
     private Long id;
     private String fileName;
-    private String uri;
+    private String preSignedUri;
     private Long ticketId;
 }

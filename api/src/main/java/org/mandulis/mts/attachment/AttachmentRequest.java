@@ -17,5 +17,4 @@ public class AttachmentRequest {
     private Long ticketId;
     private String description;
     private String extension;
-    private MultipartFile file;
 }

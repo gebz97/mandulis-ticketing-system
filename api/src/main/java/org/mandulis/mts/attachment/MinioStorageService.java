@@ -1,23 +1,22 @@
 package org.mandulis.mts.attachment;
 
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
-import io.minio.errors.MinioException;
+import io.minio.*;
+import io.minio.errors.*;
 import lombok.extern.slf4j.Slf4j;
+import okio.Timeout;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class MinioStorageService implements StorageService {
 
     private final MinioClient minioClient;
-    private final String uriPrefix;
     private final String bucketName;
 
     MinioStorageService(
@@ -30,22 +29,26 @@ public class MinioStorageService implements StorageService {
         this.minioClient = MinioClient.builder()
                 .endpoint(minioHost, minioPort, true)
                 .credentials(minioAccessKey, minioSecretKey).build();
-        this.uriPrefix = "https://" + minioHost + ":" + minioPort + "/" + minioBucketName;
         this.bucketName = minioBucketName;
     }
 
     @Override
-    public URI store(AttachmentFile attachmentFile) {
+    public String store(MultipartFile file) {
         try {
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(bucketName)
-                            .object(attachmentFile.getFileName())
-                            .stream(attachmentFile.getInputStream(), -1, 10485760)
-                            .contentType(attachmentFile.getContentType())
+                            .object(file.getOriginalFilename())
+                            .stream(file.getInputStream(), file.getSize(), 10485760)
+                            .contentType(file.getContentType())
                             .build()
             );
-            return URI.create(this.uriPrefix + "/" + attachmentFile.getFileName());
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .bucket(bucketName)
+                            .object(file.getOriginalFilename())
+                            .build()
+            );
         } catch (MinioException | IOException e) {
             log.error("Error storing file: {}", e.getMessage());
             throw new RuntimeException("Error storing file", e);
@@ -55,31 +58,27 @@ public class MinioStorageService implements StorageService {
     }
 
     @Override
-    public AttachmentFile retrieve(URI uri) {
+    public String retrieve(String objectName) {
         try {
-            String objectName = uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
-            InputStream inputStream = minioClient.getObject(
-                    GetObjectArgs.builder()
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
                             .bucket(bucketName)
                             .object(objectName)
+                            .expiry(1, TimeUnit.HOURS)
                             .build()
             );
-            return AttachmentFile.builder()
-                    .fileName(objectName)
-                    .inputStream(inputStream)
-                    .build();
-        } catch (MinioException | IOException e) {
-            log.error("Error retrieving file: {}", e.getMessage());
-            throw new RuntimeException("Error retrieving file", e);
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
+                 InvalidResponseException | IOException | NoSuchAlgorithmException | XmlParserException |
+                 ServerException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @Override
-    public boolean delete(URI uri) {
+    public boolean delete(String objectName) {
         try {
-            String objectName = uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(bucketName)

@@ -1,10 +1,10 @@
 package org.mandulis.mts.attachment;
 
-import java.net.URI;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface StorageService {
 
-    URI store(AttachmentFile attachmentFile);
-    AttachmentFile retrieve(URI uri);
-    boolean delete(URI uri);
+    String store(MultipartFile file);
+    String retrieve(String name);
+    boolean delete(String objectName);
 }
