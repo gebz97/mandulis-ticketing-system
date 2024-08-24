@@ -2,8 +2,8 @@ package org.mandulis.mts.exception;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.mandulis.mts.dto.response.ErrorDetails;
-import org.mandulis.mts.dto.response.ResponseHandler;
+import org.mandulis.mts.rest.ErrorDetails;
+import org.mandulis.mts.rest.ResponseHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.View;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,13 +19,6 @@ import java.util.List;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    private final View error;
-
-    public GlobalExceptionHandler(View error) {
-        this.error = error;
-    }
-
 
     @ExceptionHandler({UserAlreadyExistsException.class, UserUpdateException.class})
     public ResponseEntity<Object> badRequestHandler(RuntimeException ex, WebRequest req){
