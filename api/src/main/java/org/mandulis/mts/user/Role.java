@@ -1,4 +1,4 @@
-package org.mandulis.mts.enums;
+package org.mandulis.mts.user;
 
 public enum Role {
     USER,

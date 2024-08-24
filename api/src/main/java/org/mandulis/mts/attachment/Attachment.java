@@ -19,11 +19,9 @@ public class Attachment {
     @Column(nullable = false)
     private String fileName;
 
-    @Column(nullable = false)
-    private String filePath;
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 }
-
