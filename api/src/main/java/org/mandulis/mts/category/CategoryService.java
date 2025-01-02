@@ -1,5 +1,6 @@
 package org.mandulis.mts.category;
 
+import org.mandulis.mts.exception.CategoryAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,11 @@ public class CategoryService {
     }
 
     public CategoryResponse save(CategoryRequest request) {
+        boolean existsByName = categoryRepository.findByName(request.getName()).isPresent();
+        if (existsByName) throw new CategoryAlreadyExistsException(
+                "Category with this name already exists!"
+        );
+
         Category category = new Category();
         category.setName(request.getName());
         category.setDescription(request.getDescription());
@@ -34,6 +40,11 @@ public class CategoryService {
     }
 
     public Optional<CategoryResponse> update(Long id, CategoryRequest request) {
+        boolean existsByNameAndIdNot = categoryRepository.existsByNameAndIdNot(request.getName(), id);
+        if (existsByNameAndIdNot) throw new CategoryAlreadyExistsException(
+                "Category with this name already exists!"
+        );
+
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if (optionalCategory.isPresent()) {
             Category category = optionalCategory.get();

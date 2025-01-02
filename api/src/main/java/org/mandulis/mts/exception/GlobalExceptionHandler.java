@@ -20,7 +20,11 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({UserAlreadyExistsException.class, UserUpdateException.class})
+    @ExceptionHandler({
+            UserAlreadyExistsException.class,
+            UserUpdateException.class,
+            CategoryAlreadyExistsException.class
+    })
     public ResponseEntity<Object> badRequestHandler(RuntimeException ex, WebRequest req){
         List<ErrorDetails> errors = new ArrayList<>();
         errors.add(new ErrorDetails(ex.getMessage(), req.getDescription(false), LocalDateTime.now()));
