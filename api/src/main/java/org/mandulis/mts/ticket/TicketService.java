@@ -49,7 +49,7 @@ public class TicketService {
         //it calculates how many summaries should return for each page.
         Pageable pageable = PageRequest.of(page, size);
 
-        return ticketRepository.findAllSummaries(pageable).stream()
+        return ticketRepository.findByStatus(Ticket.Status.OPEN, pageable).stream()
                 .map(this::convertToSummaryDTO)
                 .collect(Collectors.toList());
     }

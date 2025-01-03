@@ -46,11 +46,16 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(@RequestBody CategoryRequest request) {
-        return ResponseHandler.handleSuccess(
-                categoryService.save(request),
-                HttpStatus.CREATED,
-                "Category created successfully"
-        );
+        return categoryService.save(request)
+                .map(response -> ResponseHandler.handleSuccess(
+                        response, HttpStatus.OK, "Category created successfully"
+                ))
+                .orElseGet(() -> ResponseHandler.handleError(
+                        null,
+                        HttpStatus.BAD_REQUEST,
+                        "Category with this name already exists",
+                        List.of("Category with this name already exists")
+                ));
     }
 
     @PutMapping("/{id}")

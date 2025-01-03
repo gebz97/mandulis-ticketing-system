@@ -14,5 +14,5 @@ import java.util.List;
 public interface TicketRepository extends JpaRepository<Ticket, Long>,
         JpaSpecificationExecutor<Ticket> {
 
-    Page<TicketSummaryProjectionView> findAllSummaries(Pageable pageable);
+    Page<TicketSummaryProjectionView> findByStatus(Ticket.Status status, Pageable pageable);
 }

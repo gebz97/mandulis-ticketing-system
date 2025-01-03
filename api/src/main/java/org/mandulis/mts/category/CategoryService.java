@@ -1,9 +1,9 @@
 package org.mandulis.mts.category;
 
-import org.mandulis.mts.exception.CategoryAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,17 +22,16 @@ public class CategoryService {
         return categories.stream().map(CategoryService::convertEntityToDto).toList();
     }
 
-    public CategoryResponse save(CategoryRequest request) {
+    public Optional<CategoryResponse> save(CategoryRequest request) {
         boolean existsByName = categoryRepository.findByName(request.getName()).isPresent();
-        if (existsByName) throw new CategoryAlreadyExistsException(
-                "Category with this name already exists!"
-        );
-
+        if (existsByName) {
+            return Optional.empty();
+        }
         Category category = new Category();
         category.setName(request.getName());
         category.setDescription(request.getDescription());
         Category savedCategory = categoryRepository.save(category);
-        return convertEntityToDto(savedCategory);
+        return Optional.of(convertEntityToDto(savedCategory));
     }
 
     public void deleteById(Long id) {
@@ -41,10 +40,7 @@ public class CategoryService {
 
     public Optional<CategoryResponse> update(Long id, CategoryRequest request) {
         boolean existsByNameAndIdNot = categoryRepository.existsByNameAndIdNot(request.getName(), id);
-        if (existsByNameAndIdNot) throw new CategoryAlreadyExistsException(
-                "Category with this name already exists!"
-        );
-
+        if (existsByNameAndIdNot) return Optional.empty();
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if (optionalCategory.isPresent()) {
             Category category = optionalCategory.get();
