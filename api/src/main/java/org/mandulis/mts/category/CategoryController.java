@@ -48,7 +48,7 @@ public class CategoryController {
     public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(@RequestBody CategoryRequest request) {
         return categoryService.save(request)
                 .map(response -> ResponseHandler.handleSuccess(
-                        response, HttpStatus.OK, "Category created successfully"
+                        response, HttpStatus.CREATED, "Category created successfully"
                 ))
                 .orElseGet(() -> ResponseHandler.handleError(
                         null,

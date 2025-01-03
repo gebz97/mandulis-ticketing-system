@@ -17,6 +17,10 @@ public class CategoryHelperFactory {
         return new Category(id2, name2, description, null);
     }
 
+    public static CategoryRequest makeCategoryRequest() {
+        return new CategoryRequest(name1, description);
+    }
+
     public static List<Category> listOfCategories() {
         return List.of(
                 defaultCategory(),
