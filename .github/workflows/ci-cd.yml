@@ -39,6 +39,7 @@ jobs:
 
       - name: Run Unit Tests
         run: mvn clean test
+        working-directory: ./api
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/${{ secrets.DB_NAME }}
           SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USER }}
