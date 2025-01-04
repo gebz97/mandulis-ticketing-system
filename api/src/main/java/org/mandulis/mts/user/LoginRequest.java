@@ -10,6 +10,7 @@ import org.mandulis.mts.rest.ErrorMessages;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 public class LoginRequest {
     @NotBlank(message = "Username is mandatory")
     @Size(min = 3, max = 20, message = ErrorMessages.LOGIN_USERNAME_VALIDATION)
