@@ -1,7 +1,6 @@
 package org.mandulis.mts.user;
 
 import lombok.*;
-import org.mandulis.mts.enums.Role;
 
 import java.util.List;
 

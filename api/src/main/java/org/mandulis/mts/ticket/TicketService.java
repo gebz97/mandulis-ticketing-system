@@ -4,8 +4,11 @@ import jakarta.transaction.Transactional;
 import org.mandulis.mts.attachment.Attachment;
 import org.mandulis.mts.comment.Comment;
 import org.mandulis.mts.category.CategoryRepository;
+import org.mandulis.mts.ticket.views.TicketSummaryProjectionView;
 import org.mandulis.mts.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +42,16 @@ public class TicketService {
     public Optional<TicketResponse> findById(Long id) {
         return ticketRepository.findById(id)
                 .map(this::convertToResponseDTO);
+    }
+
+    @Transactional
+    public List<TicketSummaryResponse> findAllSummaries(int page, int size) {
+        //it calculates how many summaries should return for each page.
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ticketRepository.findAllSummaries(pageable).stream()
+                .map(this::convertToSummaryDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -140,5 +153,17 @@ public class TicketService {
         ticketResponse.setCreatedDate(ticket.getCreatedAt());
         ticketResponse.setUpdatedDate(ticket.getUpdatedAt());
         return ticketResponse;
+    }
+
+    private TicketSummaryResponse convertToSummaryDTO(TicketSummaryProjectionView projection) {
+        return TicketSummaryResponse.builder()
+                .id(projection.getId())
+                .title(projection.getTitle())
+                .category(projection.getCategory())
+                .priority(projection.getPriority())
+                .status(projection.getStatus())
+                .createdDate(projection.getCreatedDate())
+                .updatedDate(projection.getUpdatedDate())
+                .build();
     }
 }

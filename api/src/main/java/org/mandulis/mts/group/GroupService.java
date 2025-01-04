@@ -16,6 +16,7 @@ public class GroupService {
     public GroupService(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
+
     public static GroupResponse convertEntityToDto(Group entity) {
         GroupResponse dto = new GroupResponse();
         dto.setId(entity.getId());
@@ -40,7 +41,7 @@ public class GroupService {
         return convertEntityToDto(groupRepository.save(entity));
     }
 
-    public Optional<GroupResponse> update(Long id,GroupRequest request) {
+    public Optional<GroupResponse> update(Long id, GroupRequest request) {
         Optional<Group> foundGroup = groupRepository.findById(id);
         if (foundGroup.isEmpty()) {
             return Optional.empty();

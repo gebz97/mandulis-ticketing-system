@@ -38,6 +38,13 @@ public class TicketController {
                 ));
     }
 
+    @GetMapping("/summaries")
+    public ResponseEntity<ApiResponse<List<TicketSummaryResponse>>> findAllSummaries
+            (@RequestParam("page") int page, @RequestParam("size") int size){
+        List<TicketSummaryResponse> summaries = ticketService.findAllSummaries(page, size);
+        return ResponseHandler.handleSuccess(summaries, HttpStatus.OK, "Summaries found.");
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse<TicketResponse>> save(@RequestBody TicketRequest ticketRequest) {
         TicketResponse ticket = ticketService.save(ticketRequest);
