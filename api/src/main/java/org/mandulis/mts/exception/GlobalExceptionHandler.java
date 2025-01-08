@@ -1,6 +1,7 @@
 package org.mandulis.mts.exception;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.mandulis.mts.rest.ErrorDetails;
 import org.mandulis.mts.rest.ResponseHandler;
@@ -55,7 +56,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             UserNotFoundException.class,
             GroupNotFoundException.class,
-            TicketNotFoundException.class
+            TicketNotFoundException.class,
+            EntityNotFoundException.class
     })
     public ResponseEntity<Object> notFoundExceptionHandler(RuntimeException ex, WebRequest req){
         List<ErrorDetails> errors = new ArrayList<>();

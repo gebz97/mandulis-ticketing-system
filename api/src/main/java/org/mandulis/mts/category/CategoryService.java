@@ -1,5 +1,6 @@
 package org.mandulis.mts.category;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,9 @@ public class CategoryService {
     }
 
     public void deleteById(Long id) {
-        categoryRepository.deleteById(id);
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+        categoryRepository.delete(category);
     }
 
     public Optional<CategoryResponse> update(Long id, CategoryRequest request) {
