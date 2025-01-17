@@ -17,7 +17,6 @@ class CategoryRepositoryTest {
     @Autowired
     private CategoryRepository testRepository;
 
-
     @Test
     void CategoryRepository_Save_ReturnSavedCategory() {
         Category category = CategoryHelperFactory.defaultCategory();
