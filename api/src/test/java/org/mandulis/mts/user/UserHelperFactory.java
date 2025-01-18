@@ -14,7 +14,7 @@ public class UserHelperFactory {
     private static String lastname = "lastname";
     private static String email = "example@gmail.com";
     private static Role adminRole = Role.ADMIN;
-    private static Long groupId = 2L;
+    private static Long groupId = 1L;
     private static String groupName = "group name";
     private static String groupDescription = "group description";
     private static List<Group> groups = List.of(
